@@ -1,0 +1,15 @@
+# Generated output
+png_output/
+results/
+
+# Node modules (install locally per README)
+node_modules/
+package-lock.json
+package.json
+
+# Python cache
+__pycache__/
+*.pyc
+
+# OS files
+.DS_Store
