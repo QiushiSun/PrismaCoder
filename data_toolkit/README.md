@@ -1,6 +1,6 @@
 # Data Toolkit — Code Rendering Quality Checker
 
-A suite of tools for validating and rendering code outputs (SVG, Mermaid, R, Asymptote) from JSONL datasets. Each checker extracts code from the `output` field, renders it to PNG, and classifies entries as passed or failed.
+A suite of tools for validating and rendering code outputs (SVG, Mermaid, R, Asymptote, TypeScript) from JSONL datasets. Each checker extracts code from the `output` field, renders it to PNG, and classifies entries as passed or failed.
 
 ## Supported Languages
 
@@ -10,6 +10,7 @@ A suite of tools for validating and rendering code outputs (SVG, Mermaid, R, Asy
 | **Mermaid** | `mmdc` (Node.js CLI) | Headless browser rendering |
 | **R** | `Rscript` (R) | Execute R code with PNG device; auto-transforms Shiny/plotly/rgl |
 | **Asymptote** | `asy` (Asymptote) | Compile `.asy` to PNG; auto-strips outformat/font overrides; PDF→PNG fallback |
+| **TypeScript** | `esbuild` + Puppeteer | Compile TS→JS, render visualization in headless browser, screenshot |
 
 ## Quick Start
 
@@ -25,6 +26,9 @@ cd r && python checker.py sample_data/sample.jsonl
 
 # Asymptote (requires: asy + gs on PATH)
 cd asymptote && python checker.py sample_data/sample.jsonl
+
+# TypeScript (requires: node 16+, esbuild, puppeteer, d3, chart.js)
+cd typescript && python checker.py sample_data/sample.jsonl
 ```
 
 ## Input Format
@@ -65,9 +69,15 @@ data_toolkit/
 │   ├── utils.py                # R extraction, interactive transforms, rendering
 │   ├── sample_data/sample.jsonl
 │   └── README.md
-└── asymptote/
-    ├── checker.py              # Asymptote checker entry point (parallel + tqdm)
-    ├── utils.py                # Asymptote extraction, sanitization, rendering
+├── asymptote/
+│   ├── checker.py              # Asymptote checker entry point (parallel + tqdm)
+│   ├── utils.py                # Asymptote extraction, sanitization, rendering
+│   ├── sample_data/sample.jsonl
+│   └── README.md
+└── typescript/
+    ├── checker.py              # TypeScript checker entry point (parallel + tqdm)
+    ├── utils.py                # TS extraction, esbuild compilation, Puppeteer rendering
+    ├── ts_render.js            # Node.js Puppeteer screenshot helper
     ├── sample_data/sample.jsonl
     └── README.md
 ```
@@ -86,6 +96,10 @@ data_toolkit/
 | Asymptote (`asy`) | Asymptote | `brew install asymptote` / `apt install asymptote` |
 | Ghostscript (`gs`) | Asymptote | `brew install ghostscript` / `apt install ghostscript` |
 | TeX Live | Asymptote | Needed for labels; `brew install texlive` / `apt install texlive` |
-| `tqdm` (pip) | Asymptote | `pip install tqdm` |
+| `tqdm` (pip) | Asymptote, TypeScript | `pip install tqdm` |
+| Node.js 16+ | TypeScript | `nvm install 20` |
+| `esbuild` (npm) | TypeScript | `npm install -g esbuild` |
+| `puppeteer` (npm) | TypeScript | `npm install puppeteer` |
+| `d3`, `chart.js` (npm) | TypeScript | `npm install d3 chart.js` |
 
 See each language's `README.md` for detailed setup instructions.
