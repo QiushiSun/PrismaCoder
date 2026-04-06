@@ -1,0 +1,24 @@
+run_mode: "normal" # e.g. normal or self_debug
+plotting_language: "python" # "python", "vegalite", "mermaid", "lilypond", "svg", "asymptote", "latex", "html"
+debug:
+  top_k: 3
+  output_dir: "debug_results/python/"
+paths:
+  out_folder: "eval_results/python/" # for output files
+  dataset_folder: "dataset"
+  results_filename: "results.json" # json stores temporarily plotting responses. Located in the out_folder
+  bench_stat_filename: "benchmark_stat.jsonl" # json stores final statistics of the benchmark results. Located in the out_folder
+  error_rate_file: "eval_results/python.json"
+  # instructs_file: "instructs/instructs.json" # Optional. Default instructs exists. json stores instructs for plot generation and LLM-benchmarking.
+benchmark_types: ["vis", "task"] # Options: "vis", "task", "codebert"
+data_descriptor: "head" # data descriptor. Options: "pycharm", "datalore", "lida", "head", "describe", "empty"
+model_plot_gen:
+  names: [] # Models to benchmark
+  # Example of names:
+  # names: ["TIGER-Lab/VisCoder2-7B", "Qwen/Qwen2.5-Coder-7B-Instruct", "openai/gpt-4.1"]
+  parameters: # List of additional model parameters.
+    temperature: 0.0
+model_judge:
+  name: "openai/gpt-4.1"
+  parameters: # List of additional model parameters.
+    temperature: 0.0
