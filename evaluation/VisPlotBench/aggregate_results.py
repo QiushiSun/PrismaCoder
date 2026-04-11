@@ -142,7 +142,7 @@ def build_excel(
 
 def _agg_header_columns(languages: list[str]) -> list[str]:
     """Build the flat column header list for the aggregated Excel."""
-    cols = ["Model", "Run", "Timestamp"]
+    cols = ["Timestamp", "Model", "Run"]
     for lang in languages:
         prefix = lang.capitalize()
         cols.extend([
@@ -182,17 +182,17 @@ def append_to_agg_excel(
             cell = ws.cell(row=1, column=c, value=h)
             cell.font = Font(bold=True)
             cell.alignment = Alignment(horizontal="center")
-        ws.column_dimensions["A"].width = 30
-        ws.column_dimensions["B"].width = 14
-        ws.column_dimensions["C"].width = 20
+        ws.column_dimensions["A"].width = 20
+        ws.column_dimensions["B"].width = 30
+        ws.column_dimensions["C"].width = 14
         for c in range(4, len(headers) + 1):
             ws.column_dimensions[get_column_letter(c)].width = 16
         ws.freeze_panes = "D2"
 
     row_num = ws.max_row + 1
-    ws.cell(row=row_num, column=1, value=model_name)
-    ws.cell(row=row_num, column=2, value=run_id)
-    ws.cell(row=row_num, column=3, value=timestamp)
+    ws.cell(row=row_num, column=1, value=timestamp)
+    ws.cell(row=row_num, column=2, value=model_name)
+    ws.cell(row=row_num, column=3, value=run_id)
 
     col = 4
     for lang in languages:
@@ -227,12 +227,12 @@ def append_to_agg_markdown(
         ])
 
     if need_header:
-        header = "| Model | Run | Timestamp | " + " | ".join(lang_cols) + " |"
+        header = "| Timestamp | Model | Run | " + " | ".join(lang_cols) + " |"
         sep = "| --- | --- | --- | " + " | ".join(["---:"] * len(lang_cols)) + " |"
         with open(md_path, "w", encoding="utf-8") as f:
             f.write(f"# Aggregated Results\n\n{header}\n{sep}\n")
 
-    cells = [model_name, run_id, timestamp]
+    cells = [timestamp, model_name, run_id]
     for lang in languages:
         st = language_stats.get(lang)
         if st is None:

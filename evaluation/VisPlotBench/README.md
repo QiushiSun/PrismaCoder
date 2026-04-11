@@ -98,7 +98,7 @@ playwright install chromium
 | `pdflatex` | LaTeX | TeX distribution (e.g. MacTeX, TeX Live) |
 | `asy` (Asymptote) | Asymptote | Bundled with TeX or `brew install asymptote` |
 | `lilypond` | LilyPond | `brew install lilypond` |
-| `mmdc` (Mermaid CLI) | Mermaid | `npm install -g @mermaid-js/mermaid-cli` |
+| `mmdc` (Mermaid CLI) | Mermaid | `cd plotting_benchmark/language_utils/env && npm install` |
 | Node.js | Vega-Lite, Mermaid | `brew install node` |
 
 ### Environment Variable
@@ -143,6 +143,7 @@ We make some improvements over the original pipeline:
 - **Parallel sharded execution** — samples are split into Jupyter notebook shards and executed across multiple workers via `ProcessPoolExecutor`
 - **Browser reuse for HTML** — a single Chromium instance is launched per shard and shared across all samples (instead of one browser per sample), with `networkidle` wait strategy for adaptive rendering
 - **Robust code extraction** — whitelist-based stripping of code-fence language tags from model outputs, applied at extraction time, pre-execution patching, and runtime
+- **Playwright robustness guard** — each HTML sample cell checks that the shared browser was initialized successfully; if not, a clear `RuntimeError` is raised with the fix command (`playwright install chromium`), preventing silent 0-score failures
 - **Per-cell timeout tuning** — language-specific `ExecutePreprocessor` timeouts (HTML: 120s, Mermaid: 60s, LaTeX: 120s, etc.) to avoid unnecessary `KeyboardInterrupt` failures
 - **Language filtering** — `--lang html,mermaid` flag to selectively re-run specific languages without re-running the entire benchmark
 - **Aggregated reporting** — per-run Excel + global `vpb-results-agg.xlsx` with timestamped rows + lightweight `vpb-results-agg.md` markdown table

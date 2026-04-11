@@ -265,6 +265,8 @@ print("Browser closed")
 
         return "\n".join([
             f"# id = {item_id}",
+            "if 'render_html' not in dir():",
+            "    raise RuntimeError('Browser setup failed — run: playwright install chromium')",
             f"html_code = r'''{html_src}'''",
             "img = render_html(html_code)",
             "img = process_image(img)",
