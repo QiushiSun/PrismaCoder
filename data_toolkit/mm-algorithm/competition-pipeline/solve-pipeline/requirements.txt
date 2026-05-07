@@ -1,0 +1,5 @@
+aiohttp>=3.9
+openai>=1.30
+tqdm>=4.66
+Pillow>=10.2
+PyYAML>=6.0

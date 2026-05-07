@@ -1,0 +1,129 @@
+[
+  {
+    "problem_id": "2034C",
+    "title": "C. Trapped in the Witch's Labyrinth",
+    "url": "https://codeforces.com/problemset/problem/2034/C",
+    "images": [
+      "2034C_370060615.webp",
+      "2034C_420527489.png",
+      "2034C_403585486.png"
+    ],
+    "messages": [
+      {
+        "role": "user",
+        "content_en": "C. Trapped in the Witch's Labyrinth\n\ntime limit per test3 seconds\nmemory limit per test256 megabytes\ninputstandard input\noutputstandard output\n\nIn thefourth labor of Rostam, the legendary hero from theShahnameh, an old witch has created a magical maze to trap him. The maze is a rectangular grid consisting of $$$n$$$ rows and $$$m$$$ columns. Each cell in the maze points in a specific direction: up, down, left, or right. The witch has enchanted Rostam so that whenever he is in a cell, he will move to the next cell in the direction indicated by that cell.\n\nIf Rostam eventually exits the maze, he will be freed from the witch's enchantment and will defeat her. However, if he remains trapped within the maze forever, he will never escape.\n\nThe witch has not yet determined the directions for all the cells. She wants to assign directions to the unspecified cells in such a way that the number of starting cells from which Rostam will be trapped forever is maximized. Your task is to find the maximum number of starting cells which make Rostam trapped.\n\n## Input\n\nThe first line of the input contains an integer $$$t$$$ ($$$1 \\leq t \\leq 10^4$$$), the number of test cases.\n\nFor each test case:\n\nIt's guaranteed that the sum of $$$n \\cdot m$$$ over all test cases is at most $$$10^6$$$.\n\n- The first line contains two integers $$$n$$$ and $$$m$$$ ($$$1 \\leq n, m \\leq 1000$$$), representing the number of rows and columns in the maze.\n- Each of the next $$$n$$$ lines contains a string of $$$m$$$ characters representing the directions in the maze. Each character is one of the following:U(up)D(down)L(left)R(right)?(unspecified direction)\n- U(up)\n- D(down)\n- L(left)\n- R(right)\n- ?(unspecified direction)\n\n- U(up)\n- D(down)\n- L(left)\n- R(right)\n- ?(unspecified direction)\n\n## Output\n\nFor each test case, print a single integer, the maximum number of starting cells from which Rostam will be trapped forever after assigning directions to the unspecified cells optimally.\n\n## Example\n\n## Note\n\nIn the first test case, all of the cells will be good no matter what you do.\n\nIn the second test case, if you assign the?s like the picture below, all of the cells will be bad:\n\nIn the third test case, if you assign the?s like the picture below, you will have $$$5$$$ bad cells (red-shaded cells):\n\n"
+      },
+      {
+        "role": "assistant",
+        "content": ""
+      }
+    ],
+    "test_cases": [
+      {
+        "input": "33 3UUUL?RDDD2 3??????3 3?U?R?LRDL",
+        "output": "0\n6\n5"
+      }
+    ],
+    "lang": "en"
+  },
+  {
+    "problem_id": "2169D1",
+    "title": "D1. Removal of a Sequence (Easy Version)",
+    "url": "https://codeforces.com/problemset/problem/2169/D1",
+    "images": [
+      "2169D1_554182263.png"
+    ],
+    "messages": [
+      {
+        "role": "user",
+        "content_en": "D1. Removal of a Sequence (Easy Version)\n\ntime limit per test2 seconds\nmemory limit per test512 megabytes\ninputstandard input\noutputstandard output\n\nThis is the easy version of the problem. The difference between the versions is the constraint on $$$x$$$; in this version, $$$x \\le 10^5$$$.\n\nPolycarp has a sequence of all natural numbers from $$$1$$$ to $$$10^{12}$$$. He decides to modify this sequence by performing the following action $$$x$$$ times:\n\nAfter that, Polycarp wants to find the $$$k$$$-th number in the remaining sequence or determine that the length of the resulting sequence is less than $$$k$$$.\n\nHelp Polycarp solve this problem!\n\nConsider an example. Let $$$x = 2$$$, $$$y = 3$$$, $$$k = 5$$$, then:\n\nThe numbers crossed out with a red line were removed after the first operation, and the numbers crossed out with a blue line were removed after the second operation. Thus, the number at position $$$k = 5$$$ is the number $$$10$$$.\n\n- Simultaneously remove all numbers at positions $$$y$$$, $$$2 \\cdot y$$$, $$$3 \\cdot y$$$, ..., $$$m \\cdot y \\le n$$$, where $$$n$$$ is the length of the current sequence.\n\n## Input\n\nEach test contains multiple test cases. The first line contains the number of test cases $$$t$$$ ($$$1 \\le t \\le 10$$$). The description of the test cases follows.\n\nThe only line of each test case contains three integers $$$x$$$, $$$y$$$, $$$k$$$ ($$$1 \\le x \\le \\bf{10^{5}}$$$, $$$1 \\le y, k \\le 10^{12}$$$).\n\n## Output\n\nFor each test case, output a positive integer that is at the $$$k$$$-th position in the resulting sequence, or $$$-1$$$ if the length of the resulting sequence is less than $$$k$$$.\n\n## Example\n\n"
+      },
+      {
+        "role": "assistant",
+        "content": ""
+      }
+    ],
+    "test_cases": [
+      {
+        "input": "62 3 52 5 120 2 1000000000000175 10 28100000 998244353 19999999991 1 1",
+        "output": "101-123390303042000199999-1"
+      }
+    ],
+    "lang": "en"
+  },
+  {
+    "problem_id": "1607E",
+    "title": "E. Robot on the Board 1",
+    "url": "https://codeforces.com/problemset/problem/1607/E",
+    "images": [
+      "1607E_4040166056.png"
+    ],
+    "messages": [
+      {
+        "role": "user",
+        "content_en": "E. Robot on the Board 1\n\ntime limit per test2 seconds\nmemory limit per test256 megabytes\ninputstandard input\noutputstandard output\n\nThe robot is located on a checkered rectangular board of size $$$n \\times m$$$ ($$$n$$$ rows, $$$m$$$ columns). The rows in the board are numbered from $$$1$$$ to $$$n$$$ from top to bottom, and the columns — from $$$1$$$ to $$$m$$$ from left to right.\n\nThe robot is able to move from the current cell to one of the four cells adjacent by side.\n\nThe sequence of commands $$$s$$$ executed by the robot is given. Each command is denoted by one of the symbols 'L', 'R', 'D' or 'U', and triggers the movement to left, right, down or up, respectively.\n\nThe robot can start its movement inanycell. The robot executes the commands starting from the first one, strictly in the order in which they are listed in $$$s$$$. If the robot moves beyond the edge of the board, it falls and breaks. A command that causes the robot to break isnot consideredsuccessfully executed.\n\nThe robot's task is to execute as many commands as possible without falling off the board. For example, on board $$$3 \\times 3$$$, if the robot starts a sequence of actions $$$s=$$$\"RRDLUU\" (\"right\", \"right\", \"down\", \"left\", \"up\", \"up\") from the central cell, the robot will perform one command, then the next command will force him to cross the edge. If the robot starts moving from the cell $$$(2, 1)$$$ (second row, first column) then all commands will be executed successfully and the robot will stop at the cell $$$(1, 2)$$$ (first row, second column).\n\nDetermine the cell from which the robot should start its movement in order to execute as many commands as possible.\n\n## Input\n\nThe first line contains an integer $$$t$$$ ($$$1 \\leq t \\leq 10^4$$$) — the number of test cases.\n\nThe next $$$2t$$$ lines contain descriptions of the test cases.\n\nIn the description of each test case, the first line contains two integers $$$n$$$ and $$$m$$$ ($$$1 \\leq n, m \\leq 10^6$$$) — the height and width of the field that the robot is located on. The second line of the description is a string $$$s$$$ consisting solely of characters 'L', 'R', 'D' and 'U' — the sequence of commands the robot executes. The string has a length from $$$1$$$ to $$$10^6$$$ commands.\n\nIt is guaranteed that the total length of $$$s$$$ over all test cases does not exceed $$$10^6$$$.\n\n## Output\n\nPrint $$$t$$$ lines, each of which contains the answer to the corresponding test case. The answer to the test case are two integers $$$r$$$ ($$$1 \\leq r \\leq n$$$) and $$$c$$$ ($$$1 \\leq c \\leq m$$$), separated by a space — the coordinates of the cell (row number and column number) from which the robot should start moving to perform as many commands as possible.\n\nIf there are several such cells, you may output any of them.\n\n## Example\n\n"
+      },
+      {
+        "role": "assistant",
+        "content": ""
+      }
+    ],
+    "test_cases": [
+      {
+        "input": "4\n1 1\nL\n1 2\nL\n3 3\nRRDLUU\n4 3\nLUURRDDLLLUU",
+        "output": "1 1\n1 2\n2 1\n3 2"
+      }
+    ],
+    "lang": "en"
+  },
+  {
+    "problem_id": "1713D",
+    "title": "D. Tournament Countdown",
+    "url": "https://codeforces.com/problemset/problem/1713/D",
+    "images": [
+      "1713D_1707188127.png"
+    ],
+    "messages": [
+      {
+        "role": "user",
+        "content_en": "D. Tournament Countdown\n\ntime limit per test2 seconds\nmemory limit per test256 megabytes\ninputstandard input\noutputstandard output\n\nThis is an interactive problem.\n\nThere was a tournament consisting of $$$2^n$$$ contestants. The $$$1$$$-st contestant competed with the $$$2$$$-nd, the $$$3$$$-rd competed with the $$$4$$$-th, and so on. After that, the winner of the first match competed with the winner of second match, etc. The tournament ended when there was only one contestant left, who was declared the winner of the tournament. Such a tournament scheme is known as the single-elimination tournament.\n\nYou don't know the results, but you want to find the winner of the tournament. In one query, you select two integers $$$a$$$ and $$$b$$$, which are the indices of two contestants. The jury will return $$$1$$$ if $$$a$$$ won more matches than $$$b$$$, $$$2$$$ if $$$b$$$ won more matches than $$$a$$$, or $$$0$$$ if their number of wins was equal.\n\nFind the winner in no more than $$$\\left \\lceil \\frac{1}{3} \\cdot 2^{n + 1} \\right \\rceil$$$ queries. Here $$$\\lceil x \\rceil$$$ denotes the value of $$$x$$$ rounded up to the nearest integer.\n\nNote that the tournament is long over, meaning that the results are fixed and do not depend on your queries.\n\n## Input\n\nThe first line contains a single integer $$$t$$$ ($$$1 \\leq t \\leq 2^{14}$$$) — the number of test cases.\n\nThe only line of input contains a single integer $$$n$$$ ($$$1 \\leq n \\leq 17$$$).\n\nIt is guaranteed that the sum of $$$2^n$$$ over all test cases does not exceed $$$2^{17}$$$.\n\n## Interaction\n\nThe interaction for each test case begins by reading the integer $$$n$$$.\n\nTo make a query, output \"? a b\" ($$$1 \\leq a, b \\leq 2^n$$$) without quotes. Afterwards, you should read one single integer — the answer for your query. You can make at most $$$\\left \\lceil \\frac{1}{3} \\cdot 2^{n + 1} \\right \\rceil$$$ such queries in each test case.\n\nIf you receive the integer $$$-1$$$ instead of an answer or a valid value of $$$n$$$, it means your program has made an invalid query, has exceed the limit of queries, or has given incorrect answer on the previous test case. Your program must terminate immediately to receive aWrong Answerverdict. Otherwise you can get an arbitrary verdict because your solution will continue to read from a closed stream.\n\nWhen you are ready to give the final answer, output \"! x\" ($$$1 \\leq x \\leq 2^n$$$) without quotes — the winner of the tournament. Giving this answer does not count towards the limit of queries. After solving a test case, your program should move to the next one immediately. After solving all test cases, your program should be terminated immediately.\n\nAfter printing a query or the answer do not forget to output end of line and flush the output. Otherwise, you will getIdleness limit exceeded. To do this, use:\n\nHacks\n\nTo hack, use the following format.\n\nThe first line contains an integer $$$t$$$ ($$$1 \\leq t \\leq 2^{14}$$$) — the number of test cases.\n\nThe first line of each test case contains a single integer $$$n$$$ ($$$1 \\leq n \\leq 17$$$).\n\nThe second line of each test case contains $$$2^n$$$ numbers on a line — the number of wins of each participant. There should be a sequence of matches that is consistent with the number of wins.\n\nThe sum of $$$2^n$$$ should not exceed $$$2^{17}$$$.\n\n- fflush(stdout)orcout.flush()in C++;\n- System.out.flush() in Java;\n- flush(output)in Pascal;\n- stdout.flush()in Python;\n- see documentation for other languages.\n\n## Example\n\n## Note\n\nThe tournament in the first test case is shown below. The number of wins is $$$[1,0,0,2,0,1,3,0]$$$.\n\n"
+      },
+      {
+        "role": "assistant",
+        "content": ""
+      }
+    ],
+    "test_cases": [
+      {
+        "input": "1\n3\n\n2\n\n0\n\n2",
+        "output": "? 1 4\n\n? 1 6\n\n? 5 7\n\n! 7"
+      }
+    ],
+    "lang": "en"
+  },
+  {
+    "problem_id": "1250H",
+    "title": "H. Happy Birthday",
+    "url": "https://codeforces.com/problemset/problem/1250/H",
+    "images": [
+      "1250H_1534721204.png"
+    ],
+    "messages": [
+      {
+        "role": "user",
+        "content_en": "H. Happy Birthday\n\ntime limit per test2 seconds\nmemory limit per test512 megabytes\ninputstandard input\noutputstandard output\n\nYou have a set of birthday cake candles. Each of such candles represents a digit between $$$0$$$ and $$$9$$$, inclusive.\n\nLet's denote the candle representing the digit $$$d$$$ as $$$d$$$-candle.\n\nYour set contains $$$c_0$$$ instances of $$$0$$$-candles, $$$c_1$$$ instances of $$$1$$$-candles and so on. So, the total number of candles is $$$c_0+c_1+\\dots+c_9$$$.\n\nThese digits are needed to wish your cat a happy birthday. For each birthday, starting with the first, you want to compose the age of the cat using the digits from the set.\n\nSince you light candles for a very short time, candles don't have time to burn out. For this reasonyou can reuse candles an arbitrary number of times(therefore your set of candles never changes).\n\nFor example, if you have one instance of each digit (i.e. $$$c_0=c_1=\\dots=c_9=1$$$), you can compose any number from $$$1$$$ to $$$10$$$ using this set, but you cannot compose $$$11$$$.\n\nYou have to determine the first birthday, on which you cannot compose the age of the cat using the candles from your set. In other words, find the minimum number $$$y$$$ such that all numbers from $$$1$$$ to $$$y-1$$$ can be composed by digits from your set, but $$$y$$$ cannot be composed.\n\n## Input\n\nThe first line contains an integer $$$t$$$ ($$$1 \\le t \\le 10^4$$$) — the number of test cases in the input.\n\nThe only line of each test case contains ten integer numbers $$$c_0, c_1, \\dots, c_9$$$ ($$$0 \\le c_i \\le 10^5$$$) — the number of $$$0$$$-candles, $$$1$$$-candles, $$$2$$$-candles and so on.\n\nIt is guaranteed that the sum of all $$$c_i$$$ in the input does not exceed $$$10^6$$$.\n\n## Output\n\nFor each test case, output one integer in single line — the minimum age which cannot be composed by candles from your set. Please note that the age can be quite large (it may exceed the standard 64-bit integer types in your programming language).\n\n## Example\n\n"
+      },
+      {
+        "role": "assistant",
+        "content": ""
+      }
+    ],
+    "test_cases": [
+      {
+        "input": "4\n1 1 1 1 1 1 1 1 1 1\n0 0 1 1 2 2 3 3 4 4\n1 2 1 2 1 3 1 0 0 0\n0 1 2 1 4 3 1 1 2 1",
+        "output": "11\n1\n7\n10"
+      }
+    ],
+    "lang": "en"
+  }
+]

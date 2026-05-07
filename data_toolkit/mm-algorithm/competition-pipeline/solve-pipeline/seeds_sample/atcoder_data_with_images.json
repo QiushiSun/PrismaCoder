@@ -1,0 +1,242 @@
+[
+  {
+    "problem_id": "abc287_c",
+    "title": "C - Path Graph?\n\t\t\tEditorial",
+    "url": "https://atcoder.jp/contests/abc287/tasks/abc287_c",
+    "images": [
+      "abc287_c_3439739656.png",
+      "abc287_c_2398433192.png",
+      "abc287_c_946991024.png"
+    ],
+    "messages": [
+      {
+        "role": "user",
+        "content_ja": "\n\n配点 :\n300\n点\n\n問題文\nN\n頂点\nM\n辺の単純無向グラフが与えられます。頂点には\n1, 2, \\dots, N\nの番号が、辺には\n1, 2, \\dots, M\nの番号が付けられています。\n\n辺\ni \\, (i = 1, 2, \\dots, M)\nは頂点\nu_i, v_i\nを結んでいます。\n\nこのグラフがパスグラフであるか判定してください。\n\n単純無向グラフとは\n\n単純無向グラフ\nとは、自己ループや多重辺を含まず、辺に向きの無いグラフのことをいいます。\n\nパスグラフとは\n\n頂点に\n1, 2, \\dots, N\nの番号が付けられた\nN\n頂点のグラフが\nパスグラフ\nであるとは、\n(1, 2, \\dots, N)\nを並べ変えて得られる数列\n(v_1, v_2, \\dots, v_N)\nであって、以下の条件を満たすものが存在することをいいます。\n\n全ての\ni = 1, 2, \\dots, N-1\nに対して、頂点\nv_i, v_{i+1}\nを結ぶ辺が存在する\n\n整数\ni, j\nが\n1 \\leq i, j \\leq N, |i - j| \\geq 2\nを満たすならば、頂点\nv_i, v_j\nを結ぶ辺は存在しない\n\n制約\n\n2 \\leq N \\leq 2 \\times 10^5\n\n0 \\leq M \\leq 2 \\times 10^5\n\n1 \\leq u_i, v_i \\leq N \\, (i = 1, 2, \\dots, M)\n\n入力される値は全て整数\n\n入力で与えられるグラフは単純\n\n入力\n入力は以下の形式で標準入力から与えられる。\n\nN\n\nM\n\n\nu_1\n\nv_1\n\n\nu_2\n\nv_2\n\n\n\\vdots\n\n\nu_M\n\nv_M\n\n\n出力\n与えられたグラフがパスグラフなら\nYes\n、そうでないなら\nNo\nと出力せよ。\n\n入力例 1\n4 3\n1 3\n4 2\n3 2\n\n出力例 1\nYes\n\n与えらえたグラフは下図のようであり、これはパスグラフです。\n\n入力例 2\n2 0\n\n出力例 2\nNo\n\n与えらえたグラフは下図のようであり、これはパスグラフではありません。\n\n入力例 3\n5 5\n1 2\n2 3\n3 4\n4 5\n5 1\n\n出力例 3\nNo\n\n与えらえたグラフは下図のようであり、これはパスグラフではありません。\n\n",
+        "content_en": "\n\nScore :\n300\npoints\n\nProblem Statement\nYou are given a simple undirected graph with\nN\nvertices and\nM\nedges.  The vertices are numbered\n1, 2, \\dots, N\n, and the edges are numbered\n1, 2, \\dots, M\n.\n\nEdge\ni \\, (i = 1, 2, \\dots, M)\nconnects vertices\nu_i\nand\nv_i\n.\n\nDetermine if this graph is a path graph.\n\nWhat is a simple undirected graph?\n\nA\nsimple undirected graph\nis a graph without self-loops or multiple edges whose edges do not have a direction.\n\nWhat is a path graph?\n\nA graph with\nN\nvertices numbered\n1, 2, \\dots, N\nis said to be a\npath graph\nif and only if there is a sequence\n(v_1, v_2, \\dots, v_N)\nthat is a permutation of\n(1, 2, \\dots, N)\nand satisfies the following conditions:\n\nFor all\ni = 1, 2, \\dots, N-1\n, there is an edge connecting vertices\nv_i\nand\nv_{i+1}\n.\n\nIf integers\ni\nand\nj\nsatisfies\n1 \\leq i, j \\leq N\nand\n|i - j| \\geq 2\n, then there is no edge that connects vertices\nv_i\nand\nv_j\n.\n\nConstraints\n\n2 \\leq N \\leq 2 \\times 10^5\n\n0 \\leq M \\leq 2 \\times 10^5\n\n1 \\leq u_i, v_i \\leq N \\, (i = 1, 2, \\dots, M)\n\nAll values in the input are integers.\n\nThe graph given in the input is simple.\n\nInput\nThe input is given from Standard Input in the following format:\n\nN\n\nM\n\n\nu_1\n\nv_1\n\n\nu_2\n\nv_2\n\n\n\\vdots\n\n\nu_M\n\nv_M\n\n\nOutput\nPrint\nYes\nif the given graph is a path graph; print\nNo\notherwise.\n\nSample Input 1\n4 3\n1 3\n4 2\n3 2\n\nSample Output 1\nYes\n\nIllustrated below is the given graph, which is a path graph.\n\nSample Input 2\n2 0\n\nSample Output 2\nNo\n\nIllustrated below is the given graph, which is not a path graph.\n\nSample Input 3\n5 5\n1 2\n2 3\n3 4\n4 5\n5 1\n\nSample Output 3\nNo\n\nIllustrated below is the given graph, which is not a path graph.\n\n"
+      },
+      {
+        "role": "assistant",
+        "content_ja": "",
+        "content_en": ""
+      }
+    ],
+    "test_cases": [
+      {
+        "case_number": 1,
+        "input": "4 3\r\n1 3\r\n4 2\r\n3 2",
+        "output": "Yes"
+      },
+      {
+        "case_number": 2,
+        "input": "2 0",
+        "output": "No"
+      },
+      {
+        "case_number": 3,
+        "input": "5 5\r\n1 2\r\n2 3\r\n3 4\r\n4 5\r\n5 1",
+        "output": "No"
+      },
+      {
+        "case_number": 4,
+        "input": "4 3\r\n1 3\r\n4 2\r\n3 2",
+        "output": "Yes"
+      },
+      {
+        "case_number": 5,
+        "input": "2 0",
+        "output": "No"
+      },
+      {
+        "case_number": 6,
+        "input": "5 5\r\n1 2\r\n2 3\r\n3 4\r\n4 5\r\n5 1",
+        "output": "No"
+      }
+    ],
+    "lang": "ja"
+  },
+  {
+    "problem_id": "agc005_b",
+    "title": "B - Minimum Sum\n\t\t\tEditorial",
+    "url": "https://atcoder.jp/contests/agc005/tasks/agc005_b",
+    "images": [
+      "agc005_b_3359071869.png"
+    ],
+    "messages": [
+      {
+        "role": "user",
+        "content_ja": "\n\n配点 :\n400\n点\n\n問題文\nすぬけ君はある日友人から長さ\nN\nの順列\na_1, a_2, ..., a_N\nを貰いました。\n\nを求めてください。\n\n制約\n\n1 ≦ N ≦ 200,000\n\n(a_1, a_2, ..., a_N)\nは\n(1, 2, ..., N)\nを並び替えたものである\n\n入力\n入力は以下の形式で標準入力から与えられる。\n\nN\n\n\na_1\n\na_2\n\n...\n\na_N\n\n\n出力\n1\n行に答えを出力する。\n\nなお、32bit整数型に答えが収まるとは限らないことに注意すること。\n\n入力例 1\n3\n2 1 3\n\n出力例 1\n9\n\n入力例 2\n4\n1 3 2 4\n\n出力例 2\n19\n\n入力例 3\n8\n5 4 8 1 2 6 7 3\n\n出力例 3\n85\n\n",
+        "content_en": "\n\nScore :\n400\npoints\n\nProblem Statement\nOne day, Snuke was given a permutation of length\nN\n,\na_1, a_2, ..., a_N\n, from his friend.\n\nFind the following:\n\nConstraints\n\n1 ≦ N ≦ 200,000\n\n(a_1, a_2, ..., a_N)\nis a permutation of\n(1, 2, ..., N)\n.\n\nInput\nThe input is given from Standard Input in the following format:\n\nN\n\n\na_1\n\na_2\n\n...\n\na_N\n\n\nOutput\nPrint the answer.\n\nNote that the answer may not fit into a 32-bit integer.\n\nSample Input 1\n3\n2 1 3\n\nSample Output 1\n9\n\nSample Input 2\n4\n1 3 2 4\n\nSample Output 2\n19\n\nSample Input 3\n8\n5 4 8 1 2 6 7 3\n\nSample Output 3\n85\n\n"
+      },
+      {
+        "role": "assistant",
+        "content_ja": "",
+        "content_en": ""
+      }
+    ],
+    "test_cases": [
+      {
+        "case_number": 1,
+        "input": "3\r\n2 1 3",
+        "output": "9"
+      },
+      {
+        "case_number": 2,
+        "input": "4\r\n1 3 2 4",
+        "output": "19"
+      },
+      {
+        "case_number": 3,
+        "input": "8\r\n5 4 8 1 2 6 7 3",
+        "output": "85"
+      },
+      {
+        "case_number": 4,
+        "input": "3\r\n2 1 3",
+        "output": "9"
+      },
+      {
+        "case_number": 5,
+        "input": "4\r\n1 3 2 4",
+        "output": "19"
+      },
+      {
+        "case_number": 6,
+        "input": "8\r\n5 4 8 1 2 6 7 3",
+        "output": "85"
+      }
+    ],
+    "lang": "ja"
+  },
+  {
+    "problem_id": "arc037_d",
+    "title": "D - Chaotic Polygons\n\t\t\tEditorial",
+    "url": "https://atcoder.jp/contests/arc037/tasks/arc037_d",
+    "images": [
+      "arc037_d_2201684900.png",
+      "arc037_d_4064960481.png",
+      "arc037_d_3480558234.png"
+    ],
+    "messages": [
+      {
+        "role": "user",
+        "content_ja": "\n\n問題文\n\n非負整数\nL\nに対し、レベル\nL\nのシェルピンスキーのガスケットとは次のような図形である。\n\nレベル\n0\nのシェルピンスキーのガスケットとは、\n1\n個の正三角形である。\n\nレベル\ni\n(\ni\n\n≧\n\n1\n) のシェルピンスキーのガスケットは、レベル\ni-1\nのシェルピンスキーのガスケットに含まれる\n3\ni-1\n個の正三角形それぞれに対して以下の操作を行って得られる図形である。\n\n(操作) 正三角形の各辺の中点を結び、中心に小さな正三角形を作る。この正三角形を図形から取り除く（この結果、もとの正三角形は\n3\nつの小さな正三角形に分割される）。\n\n以下にレベル\n0,1,2,3,4\nのシェルピンスキーのガスケットを図示する。\n\n正整数\nL\nが与えられる。レベル\nL\nのシェルピンスキーのガスケットに含まれる\n3\nL\n個の正三角形のすべての辺を考える。これらの線分から形成される単純多角形 (自己交差しない多角形) の個数を\n1,000,000,007\nで割った余りを求めよ。相似な多角形であっても位置が異なるものは区別する。\n\n以下に数えるべき多角形とそうでないものの例を示す。\n\n入力\n\n入力は以下の形式で標準入力から与えられる。\n\n\n\nL\n\n\n1\n行目に、 整数\nL\n(\n1\n\n≦\n\nL\n\n≦\n\n10\n5\n) が与えられる。\n\n出力\n\n標準出力に求める多角形の個数を\n1,000,000,007\nで割った余りを出力し、末尾で改行せよ。\n\n入力例1\n\n\n1\n\n出力例1\n\n\n11\n\n以下の\n11\n個の単純多角形が存在する。\n\n入力例2\n\n\n2\n\n出力例2\n\n\n1033\n\n入力例3\n\n\n3\n\n出力例3\n\n\n30304092\n\n入力例4\n\n\n123\n\n出力例4\n\n\n853343829\n\n",
+        "content_en": "\n\n問題文\n\n非負整数\nL\nに対し、レベル\nL\nのシェルピンスキーのガスケットとは次のような図形である。\n\nレベル\n0\nのシェルピンスキーのガスケットとは、\n1\n個の正三角形である。\n\nレベル\ni\n(\ni\n\n≧\n\n1\n) のシェルピンスキーのガスケットは、レベル\ni-1\nのシェルピンスキーのガスケットに含まれる\n3\ni-1\n個の正三角形それぞれに対して以下の操作を行って得られる図形である。\n\n(操作) 正三角形の各辺の中点を結び、中心に小さな正三角形を作る。この正三角形を図形から取り除く（この結果、もとの正三角形は\n3\nつの小さな正三角形に分割される）。\n\n以下にレベル\n0,1,2,3,4\nのシェルピンスキーのガスケットを図示する。\n\n正整数\nL\nが与えられる。レベル\nL\nのシェルピンスキーのガスケットに含まれる\n3\nL\n個の正三角形のすべての辺を考える。これらの線分から形成される単純多角形 (自己交差しない多角形) の個数を\n1,000,000,007\nで割った余りを求めよ。相似な多角形であっても位置が異なるものは区別する。\n\n以下に数えるべき多角形とそうでないものの例を示す。\n\n入力\n\n入力は以下の形式で標準入力から与えられる。\n\n\n\nL\n\n\n1\n行目に、 整数\nL\n(\n1\n\n≦\n\nL\n\n≦\n\n10\n5\n) が与えられる。\n\n出力\n\n標準出力に求める多角形の個数を\n1,000,000,007\nで割った余りを出力し、末尾で改行せよ。\n\n入力例1\n\n\n1\n\n出力例1\n\n\n11\n\n以下の\n11\n個の単純多角形が存在する。\n\n入力例2\n\n\n2\n\n出力例2\n\n\n1033\n\n入力例3\n\n\n3\n\n出力例3\n\n\n30304092\n\n入力例4\n\n\n123\n\n出力例4\n\n\n853343829\n\n"
+      },
+      {
+        "role": "assistant",
+        "content_ja": "",
+        "content_en": ""
+      }
+    ],
+    "test_cases": [
+      {
+        "case_number": 1,
+        "input": "1",
+        "output": "11"
+      },
+      {
+        "case_number": 2,
+        "input": "2",
+        "output": "1033"
+      },
+      {
+        "case_number": 3,
+        "input": "3",
+        "output": "30304092"
+      },
+      {
+        "case_number": 4,
+        "input": "123",
+        "output": "853343829"
+      }
+    ],
+    "lang": "ja"
+  },
+  {
+    "problem_id": "agc008_f",
+    "title": "F - Black Radius\n\t\t\tEditorial",
+    "url": "https://atcoder.jp/contests/agc008/tasks/agc008_f",
+    "images": [
+      "agc008_f_3767844269.png"
+    ],
+    "messages": [
+      {
+        "role": "user",
+        "content_ja": "\n\n配点 :\n1900\n点\n\n問題文\nN\n頂点の木があります。\n頂点は\n1\nから\nN\nまで番号が振られています。\n各\n1 ≤ i ≤ N - 1\nについて、\ni\n番目の辺は頂点\na_i\nと\nb_i\nを繋いでいます。\n辺の長さはすべて\n1\nです。\n\nいくつかの頂点はすぬけ君のお気に入りです。\nお気に入りの頂点の情報は、長さ\nN\nの文字列\ns\nとして与えられます。\n各\n1 ≤ i ≤ N\nについて、頂点\ni\nがお気に入りならば\ns_i\nは\n1\nで、頂点\ni\nがお気に入りでないならば\ns_i\nは\n0\nです。\n\n最初、頂点はすべて白色です。\nすぬけ君は次の操作をちょうど\n1\n回だけ行います。\n\nお気に入りの頂点\nv\nをひとつ選び、非負整数\nd\nをひとつ選ぶ。 頂点\nv\nから距離\nd\n以内の頂点をすべて黒く塗る。\n\n最終的な頂点の色の組合せとして考えられるものは何通りか求めてください。\n\n制約\n\n2 ≤ N ≤ 2×10^5\n\n1 ≤ a_i, b_i ≤ N\n\nグラフは木である。\n\n|s| = N\n\ns\nは\n0\nと\n1\nのみからなる。\n\ns\nには\n1\nが含まれる。\n\n部分点\n\n1300\n点分のデータセットでは、\ns\nは\n1\nのみからなる。\n\n入力\n入力は以下の形式で標準入力から与えられる。\n\nN\n\n\na_1\n\nb_1\n\n\na_2\n\nb_2\n\n\n:\n\n\na_{N - 1}\n\nb_{N - 1}\n\n\ns\n\n\n出力\n最終的な頂点の色の組合せとして考えられるものは何通りか出力せよ。\n\n入力例 1\n4\n1 2\n1 3\n1 4\n1100\n\n出力例 1\n4\n\n次の\n4\n通りです。\n\n入力例 2\n5\n1 2\n1 3\n1 4\n4 5\n11111\n\n出力例 2\n11\n\nこのケースは部分点の制約を満たします。\n\n入力例 3\n6\n1 2\n1 3\n1 4\n2 5\n2 6\n100011\n\n出力例 3\n8\n\n",
+        "content_en": "\n\nScore :\n1900\npoints\n\nProblem Statement\nThere is a tree with\nN\nvertices.\nThe vertices are numbered\n1\nthrough\nN\n.\nFor each\n1 ≤ i ≤ N - 1\n, the\ni\n-th edge connects vertices\na_i\nand\nb_i\n.\nThe lengths of all the edges are\n1\n.\n\nSnuke likes some of the vertices.\nThe information on his favorite vertices are given to you as a string\ns\nof length\nN\n.\nFor each\n1 ≤ i ≤ N\n,\ns_i\nis\n1\nif Snuke likes vertex\ni\n, and\n0\nif he does not like vertex\ni\n.\n\nInitially, all the vertices are white.\nSnuke will perform the following operation exactly once:\n\nSelect a vertex\nv\nthat he likes, and a non-negative integer\nd\n. Then, paint all the vertices black whose distances from\nv\nare at most\nd\n.\n\nFind the number of the possible combinations of colors of the vertices after the operation.\n\nConstraints\n\n2 ≤ N ≤ 2×10^5\n\n1 ≤ a_i, b_i ≤ N\n\nThe given graph is a tree.\n\n|s| = N\n\ns\nconsists of\n0\nand\n1\n.\n\ns\ncontains at least one occurrence of\n1\n.\n\nPartial Score\n\nIn the test set worth\n1300\npoints,\ns\nconsists only of\n1\n.\n\nInput\nThe input is given from Standard Input in the following format:\n\nN\n\n\na_1\n\nb_1\n\n\na_2\n\nb_2\n\n\n:\n\n\na_{N - 1}\n\nb_{N - 1}\n\n\ns\n\n\nOutput\nPrint the number of the possible combinations of colors of the vertices after the operation.\n\nSample Input 1\n4\n1 2\n1 3\n1 4\n1100\n\nSample Output 1\n4\n\nThe following four combinations of colors of the vertices are possible:\n\nSample Input 2\n5\n1 2\n1 3\n1 4\n4 5\n11111\n\nSample Output 2\n11\n\nThis case satisfies the additional constraint for the partial score.\n\nSample Input 3\n6\n1 2\n1 3\n1 4\n2 5\n2 6\n100011\n\nSample Output 3\n8\n\n"
+      },
+      {
+        "role": "assistant",
+        "content_ja": "",
+        "content_en": ""
+      }
+    ],
+    "test_cases": [
+      {
+        "case_number": 1,
+        "input": "4\r\n1 2\r\n1 3\r\n1 4\r\n1100",
+        "output": "4"
+      },
+      {
+        "case_number": 2,
+        "input": "5\r\n1 2\r\n1 3\r\n1 4\r\n4 5\r\n11111",
+        "output": "11"
+      },
+      {
+        "case_number": 3,
+        "input": "6\r\n1 2\r\n1 3\r\n1 4\r\n2 5\r\n2 6\r\n100011",
+        "output": "8"
+      },
+      {
+        "case_number": 4,
+        "input": "4\r\n1 2\r\n1 3\r\n1 4\r\n1100",
+        "output": "4"
+      },
+      {
+        "case_number": 5,
+        "input": "5\r\n1 2\r\n1 3\r\n1 4\r\n4 5\r\n11111",
+        "output": "11"
+      },
+      {
+        "case_number": 6,
+        "input": "6\r\n1 2\r\n1 3\r\n1 4\r\n2 5\r\n2 6\r\n100011",
+        "output": "8"
+      }
+    ],
+    "lang": "ja"
+  },
+  {
+    "problem_id": "arc025_4",
+    "title": "D - コンセント\n\t\t\tEditorial",
+    "url": "https://atcoder.jp/contests/arc025/tasks/arc025_4",
+    "images": [
+      "arc025_4_2775284742.png",
+      "arc025_4_2349135052.png"
+    ],
+    "messages": [
+      {
+        "role": "user",
+        "content_ja": "\n\n問題文\n\nAnti Real Corporation 社は、日々の生活をちょっと変わった方法で充実させようと奮闘する組織である。\n\nAnti Real Corporation 社のコンセント差込口はちょっと変わった形状をしている。コンセント差込口は縦に\nH\n行、横に\nW\n列の穴が並んだ形状をしている。コンセントプラグは、未使用の穴のうち、上下または左右に連続した\n2\n箇所を使用することができる。言い変えると、上から\ni\n番目、右から\nj\n番目の穴を (\ni\n,\nj\n) と呼ぶことにすると、\n\n(\ni\n,\nj\n) と (\ni+1\n,\nj\n) (\n1 ≦ i ≦ H-1\n,\n1 ≦ j ≦ W\n) の\n2\nつの穴を選んで使用する。\n\n(\ni\n,\nj\n) と (\ni\n,\nj+1\n) (\n1 ≦ i ≦ H\n,\n1 ≦ j ≦ W-1\n) の\n2\nつの穴を選んで使用する。\n\nコンセントプラグを差し込むにあたって、複数のコンセントプラグが同じ穴を同時に共有したり、コンセントキャップ（後述）が付いている穴を使用することはできない。\n\n社長はある日、コンセントへの差し込みに面白さを与えるため、\nN\n日間、営業開始時刻に以下の動作のうちどちらか\n1\nつを行うことにした。\n\n未使用な穴を\n1\nつ選び、その穴にコンセントキャップを差し込む。\n\nコンセントキャップが差し込まれている穴を\n1\nつ選び、コンセントキャップを取り除き未使用状態にする。\n\n最初、どの穴も未使用であるとする。\n\n社長は部長に、\nN\n日間のそれぞれの営業日において、コンセントへの差し込み方が全部で何通りあるのかを記録し、最終日に調査結果を報告するよう指示した。組み合わせについて、コンセントプラグ同士、コンセントキャップ同士は区別しないものとし、コンセントプラグを\n1\nつも使用しないものも\n1\n通りとして数えるとする。\n\nところがこのことを締めきり直前まで忘れてしまっていた部長は、偶然にも残されていたコンセントキャップの履歴から、どうにかそれぞれの日についての結果を求めることにした。\n\nすべての組み合わせを虱潰しに調べているようでは間に合わなさそうなので、開発班のあなたに、プログラムを書くように依頼があった。\n\n入力\n\n入力は以下の形式で標準入力から与えられる。\n\n\n\nH\n\nW\n\n\nN\n\n\nS_1\n\nT_1\n\n\nS_2\n\nT_2\n\n:\n\nS_N\n\nT_N\n\n\n1\n行目には、コンセント差込口の形状を表す\n2\nつの整数\nH (1 ≦ H ≦ 2)\nと\nW (1 ≦ W ≦ 10^{11})\nが空白区切りで与えられる。これはコンセント差込口が縦\nH\n行横\nW\n列に穴が並んだ形状をしていることを表す。\n\n2\n行目には操作日程を表す整数\nN (1 ≦ N ≦ 20,000)\nが与えられる。\n\n3\n行目から\nN\n行では、操作についての情報が与えられる。このうち\ni\n行目では、\ni\n日目に行う動作を表す\n2\nつの整数\nS_i (1 ≦ S_i ≦ H)\nと\nT_i (1 ≦ T_i ≦ W)\nが与えられる。これは、この日の営業開始時刻より前の段階で (\nS_i\n,\nT_i\n) が未使用なら、その日の営業開始時にコンセントキャップを差し込むことを、そうでないならコンセントキャップを取り除くことを表す。\n\n部分点\n\nこの問題には部分点が設定されている。\n\nW ≦ 5,000 , N ≦ 3,000\nを満たすデータセット\n1\nに正解した場合は、\n10\n点が与えられる。\n\nW ≦ 100,000 , N ≦ 3,000\nを満たすデータセット\n2\nに正解した場合は、上記とは別に\n30\n点が与えられる。\n\n追加制約のないデータセット\n3\nに正解した場合は、上記とは別に\n60\n点が与えられる。\n\n出力\n\nN\n行にわたって出力せよ。\nN\n行のうち\ni\n行目には、\ni\n日目の営業開始時の操作後において、考えられるコンセントの配置の総数を\n1000000007 (= 1,000,000,007)\nで割った余りを出力せよ。\n\n入力例1\n\n\n2 3\n3\n1 1\n2 3\n1 1\n\n出力例1\n\n\n10\n5\n10\n\n第\n1\n日目の操作の後、以下のような配置になっている。この図において、六角形で表された場所はコンセントキャップがある場所であることを表す。\n\nよって、以下の\n10\n通りの配置が考えられる。\n\n入力例2\n\n\n2 4\n5\n1 2\n1 1\n2 2\n2 1\n1 4\n\n出力例2\n\n\n27\n17\n7\n7\n3\n\n",
+        "content_en": "\n\n問題文\n\nAnti Real Corporation 社は、日々の生活をちょっと変わった方法で充実させようと奮闘する組織である。\n\nAnti Real Corporation 社のコンセント差込口はちょっと変わった形状をしている。コンセント差込口は縦に\nH\n行、横に\nW\n列の穴が並んだ形状をしている。コンセントプラグは、未使用の穴のうち、上下または左右に連続した\n2\n箇所を使用することができる。言い変えると、上から\ni\n番目、右から\nj\n番目の穴を (\ni\n,\nj\n) と呼ぶことにすると、\n\n(\ni\n,\nj\n) と (\ni+1\n,\nj\n) (\n1 ≦ i ≦ H-1\n,\n1 ≦ j ≦ W\n) の\n2\nつの穴を選んで使用する。\n\n(\ni\n,\nj\n) と (\ni\n,\nj+1\n) (\n1 ≦ i ≦ H\n,\n1 ≦ j ≦ W-1\n) の\n2\nつの穴を選んで使用する。\n\nコンセントプラグを差し込むにあたって、複数のコンセントプラグが同じ穴を同時に共有したり、コンセントキャップ（後述）が付いている穴を使用することはできない。\n\n社長はある日、コンセントへの差し込みに面白さを与えるため、\nN\n日間、営業開始時刻に以下の動作のうちどちらか\n1\nつを行うことにした。\n\n未使用な穴を\n1\nつ選び、その穴にコンセントキャップを差し込む。\n\nコンセントキャップが差し込まれている穴を\n1\nつ選び、コンセントキャップを取り除き未使用状態にする。\n\n最初、どの穴も未使用であるとする。\n\n社長は部長に、\nN\n日間のそれぞれの営業日において、コンセントへの差し込み方が全部で何通りあるのかを記録し、最終日に調査結果を報告するよう指示した。組み合わせについて、コンセントプラグ同士、コンセントキャップ同士は区別しないものとし、コンセントプラグを\n1\nつも使用しないものも\n1\n通りとして数えるとする。\n\nところがこのことを締めきり直前まで忘れてしまっていた部長は、偶然にも残されていたコンセントキャップの履歴から、どうにかそれぞれの日についての結果を求めることにした。\n\nすべての組み合わせを虱潰しに調べているようでは間に合わなさそうなので、開発班のあなたに、プログラムを書くように依頼があった。\n\n入力\n\n入力は以下の形式で標準入力から与えられる。\n\n\n\nH\n\nW\n\n\nN\n\n\nS_1\n\nT_1\n\n\nS_2\n\nT_2\n\n:\n\nS_N\n\nT_N\n\n\n1\n行目には、コンセント差込口の形状を表す\n2\nつの整数\nH (1 ≦ H ≦ 2)\nと\nW (1 ≦ W ≦ 10^{11})\nが空白区切りで与えられる。これはコンセント差込口が縦\nH\n行横\nW\n列に穴が並んだ形状をしていることを表す。\n\n2\n行目には操作日程を表す整数\nN (1 ≦ N ≦ 20,000)\nが与えられる。\n\n3\n行目から\nN\n行では、操作についての情報が与えられる。このうち\ni\n行目では、\ni\n日目に行う動作を表す\n2\nつの整数\nS_i (1 ≦ S_i ≦ H)\nと\nT_i (1 ≦ T_i ≦ W)\nが与えられる。これは、この日の営業開始時刻より前の段階で (\nS_i\n,\nT_i\n) が未使用なら、その日の営業開始時にコンセントキャップを差し込むことを、そうでないならコンセントキャップを取り除くことを表す。\n\n部分点\n\nこの問題には部分点が設定されている。\n\nW ≦ 5,000 , N ≦ 3,000\nを満たすデータセット\n1\nに正解した場合は、\n10\n点が与えられる。\n\nW ≦ 100,000 , N ≦ 3,000\nを満たすデータセット\n2\nに正解した場合は、上記とは別に\n30\n点が与えられる。\n\n追加制約のないデータセット\n3\nに正解した場合は、上記とは別に\n60\n点が与えられる。\n\n出力\n\nN\n行にわたって出力せよ。\nN\n行のうち\ni\n行目には、\ni\n日目の営業開始時の操作後において、考えられるコンセントの配置の総数を\n1000000007 (= 1,000,000,007)\nで割った余りを出力せよ。\n\n入力例1\n\n\n2 3\n3\n1 1\n2 3\n1 1\n\n出力例1\n\n\n10\n5\n10\n\n第\n1\n日目の操作の後、以下のような配置になっている。この図において、六角形で表された場所はコンセントキャップがある場所であることを表す。\n\nよって、以下の\n10\n通りの配置が考えられる。\n\n入力例2\n\n\n2 4\n5\n1 2\n1 1\n2 2\n2 1\n1 4\n\n出力例2\n\n\n27\n17\n7\n7\n3\n\n"
+      },
+      {
+        "role": "assistant",
+        "content_ja": "",
+        "content_en": ""
+      }
+    ],
+    "test_cases": [
+      {
+        "case_number": 1,
+        "input": "2 3\r\n3\r\n1 1\r\n2 3\r\n1 1",
+        "output": "10\r\n5\r\n10"
+      },
+      {
+        "case_number": 2,
+        "input": "2 4\r\n5\r\n1 2\r\n1 1\r\n2 2\r\n2 1\r\n1 4",
+        "output": "27\r\n17\r\n7\r\n7\r\n3"
+      }
+    ],
+    "lang": "ja"
+  }
+]

@@ -1,0 +1,169 @@
+[
+  {
+    "problem_id": "1431",
+    "title": "",
+    "url": "https://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=1431",
+    "images": [
+      "1431_2539894417.png"
+    ],
+    "messages": [
+      {
+        "role": "user",
+        "content_en": "The Cross Covers Everything\n\nA cross-shaped infinite area on the $x$-$y$ plane can be specified by two distinct points as depicted\non the figure below.\n\nFigure J.1. The cross area specified by two points numbered 2 and 4\n\n Given a set of points on the plane, you are asked to figure out how many pairs of the points\n form a cross-shaped area that covers all the points. To be more precise, when $n$ points with\n coordinates ($x_i$, $y_i$) ($i = 1, \\cdot , n$) are given, the ordered pair $\\langle p, q \\rangle$ is said to cover a point ($x, y$)\n if $x_p \\leq x \\leq x_q$, $y_p \\leq y \\leq y_q$, or both hold. Your task is to find how many pairs $\\langle p, q \\rangle$ cover all\n the $n$ points. No two given points have the same $x$-coordinate nor the same $y$-coordinate.\n\nInput\n\nThe input consists of a single test case of the following format.\n\n$n$\n$x_1$ $y_1$\n$\\vdots$\n$x_n$ $y_n$\n\n The first line contains an integer $n$ ($2 \\leq n \\leq 2 \\times 10^5$), which is the number of points given. Two\n integers $x_i$ and $y_i$ in the $i$-th line of the following $n$ lines are the coordinates of the $i$-th point\n ($1 \\leq x_i \\leq 10^6, 1 \\leq y_i \\leq 10^6$). You may assume that $x_j \\neq x_k$ and $y_j \\neq y_k$ hold for all $j \\neq k$.\n\nOutput\n\n Print in a line the number of ordered pairs of points that satisfy the condition.\n\nSample Input 1\n\n4\n2 1\n1 2\n6 3\n5 4\n\nSample Output 1\n\n4\n\nSample Input 2\n\n20\n15 9\n14 13\n2 7\n10 5\n11 17\n13 8\n9 3\n8 12\n6 4\n19 18\n12 1\n3 2\n5 10\n18 11\n4 19\n20 16\n16 15\n1 14\n7 6\n17 20\n\n Sample Output 2\n\n9\n\n Figure J.1 depicts the cross specified by two points numbered 2 and 4, that are the second and\n the fourth points of the Sample Input 1. This is one of the crosses covering all the points.\n\n Source: https://onlinejudge.u-aizu.ac.jp/problems/1431"
+      },
+      {
+        "role": "assistant",
+        "content": ""
+      }
+    ],
+    "test_cases": [
+      {
+        "input": "4\n2 1\n1 2\n6 3\n5 4",
+        "output": "4"
+      },
+      {
+        "input": "20\n15 9\n14 13\n2 7\n10 5\n11 17\n13 8\n9 3\n8 12\n6 4\n19 18\n12 1\n3 2\n5 10\n18 11\n4 19\n20 16\n16 15\n1 14\n7 6\n17 20",
+        "output": "9"
+      }
+    ],
+    "lang": "ja"
+  },
+  {
+    "problem_id": "1411",
+    "title": "",
+    "url": "https://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=1411",
+    "images": [
+      "1411_3729430805.png",
+      "1411_2996550906.png",
+      "1411_2860950215.png"
+    ],
+    "messages": [
+      {
+        "role": "user",
+        "content_en": "Three-Axis Views\n\nA friend of yours is an artist designing Image-Containing Projection Cubes (ICPCs). An ICPC\nis a crystal cube with its side of integer length. Some of its regions are made opaque through\nan elaborate laser machining process. Each of the opaque regions is a cube of unit size aligned\nwith integer coordinates.\n\nFigure A.1 depicts an ICPC as given in the Sample Input 1. Here, the green wires correspond\nto the edges of the crystal cube. The blue small cubes correspond to the cubic opaque regions\ninside the crystal.\n\n Figure A.1. ICPC of Sample Input 1\n\n ICPCs are meant to enjoy the silhouettes of its opaque regions projected by three parallel lights perpendicular to its faces. Figure A.2 depicts the ICPC and its three silhouettes.\n\nFigure A.2. ICPC of Sample Input 1 and its silhouettes (dashed-dotted lines are the\nedges of the parallel light perpendicular to the left face)\n\nYour job is to write a program that decides whether there exists an ICPC that makes the given\nsilhouettes.\n\nInput\n\n The input consists of a single test case of the following format.\n\n$n$\n$s_1$\n...\n$s_n$\n$t_1$\n...\n$t_n$\n$u_1$\n...\n$u_n$\n\n Here, $n$ is the size of the ICPC, an integer between 1 and 100, inclusive.\n\n The ICPC of size $n$ makes three silhouettes of $n \\times n$ squares of dark and bright cells. Cells are dark if they are covered by the shadows of opaque unit cubes, and are bright, otherwise. The $3n$ lines, each with $n$ digits, starting from the second line of the input denote the three silhouettes of the ICPC, where '0' represents a bright cell and '1' represents a dark cell. At least one of the digits in the $3n$ lines is '1'.\n\n First comes the data for the silhouette on the $yz$-plane, where the first line $s_1$ gives the cells of the silhouettes with the largest $z$-coordinate value. They are in the order of their $y$-coordinates. The following lines, $s_2,..., s_n$, give the cells with the decreasing values of their $z$-coordinates.\n\n Then comes the data for the silhouette on the $zx$-plane, where the first line, $t_1$ gives the cells with the largest $x$-coordinate value, in the order of their $z$-coordinates. The following lines, $t_2, ..., t_n$, give the cells with the decreasing values of their $x$-coordinates.\n\n Finally comes the data for the silhouette on the $xy$-plane, where the first line, $u_1$, gives the cells with the largest $y$-coordinate value, in the order of their $x$-coordinates. The following lines, $u_2, ..., u_n$, give the cells with the decreasing values of their $y$-coordinates.\n\n The following figure depicts the three silhouettes of the ICPC given in the Sample Input 1.\n\nFigure A.3. 0-1 representations of silhouettes (Sample Input 1)\n\nOutput\n\n Print \"Yes\" if it is possible to make an ICPC with the given silhouettes. Print \"No\", otherwise.\n\nSample Input 1\n\n3\n010\n010\n111\n100\n111\n101\n011\n111\n010\n\nSample Output 1\n\nYes\n\nSample Input 2\n\n2\n00\n01\n00\n10\n10\n00\n\n Sample Output 2\n\nYes\n\nSample Input 3\n\n2\n00\n00\n00\n10\n10\n00\n\n Sample Output 3\n\nNo\n\nSample Input 4\n\n2\n01\n00\n00\n10\n10\n00\n\n Sample Output 4\n\nNo\n\n Source: https://onlinejudge.u-aizu.ac.jp/problems/1411"
+      },
+      {
+        "role": "assistant",
+        "content": ""
+      }
+    ],
+    "test_cases": [
+      {
+        "input": "3\n010\n010\n111\n100\n111\n101\n011\n111\n010",
+        "output": "Yes"
+      },
+      {
+        "input": "2\n00\n01\n00\n10\n10\n00",
+        "output": "Yes"
+      },
+      {
+        "input": "2\n00\n00\n00\n10\n10\n00",
+        "output": "No"
+      },
+      {
+        "input": "2\n01\n00\n00\n10\n10\n00",
+        "output": "No"
+      }
+    ],
+    "lang": "ja"
+  },
+  {
+    "problem_id": "1437",
+    "title": "",
+    "url": "https://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=1437",
+    "images": [
+      "1437_2219038.png"
+    ],
+    "messages": [
+      {
+        "role": "user",
+        "content_en": "Incredibly Cute Penguin Chicks\n\r\n The Incredibly Cute Penguin Chicks love to eat worms. One day, their mother found a long string-shaped worm with a number of letters on it. She decided to cut this worm into pieces and feed the chicks.\r\n\n The chicks somehow love International Collegiate Programming Contest and want to eat pieces with ICPC-ish character strings on them. Here, a string is ICPC-ish if the following conditions hold.\r\n\n It consists of only C's, I's, and P's.\n Two of these three characters appear the same number of times (possibly zero times) in the string and the remaining character appears strictly more times.\n\n For example, ICPC and PPPPPP are ICPC-ish, but PIC, PIPCCC and PIPE are not.\r\n\n You are given the string on the worm the mother found. The mother wants to provide one or more parts of the worm all with an ICPC-ish string, without wasting remains. Your task is to count the number of ways the worm can be prepared in such a manner.\r\n\nInput\n\r\n The input is a single line containing a character string $S$ consisting of only C's, I's, and P's, which is on the string-shaped worm the mother penguin found. The length of $S$ is between $1$ and $10^6$, inclusive.\r\n\nOutput\n\r\nPrint in a line the number of ways to represent the string S as a concatenation of one or more\r\nICPC-ish strings modulo a prime number $998 244 353 = 2^{23} \\times 7 \\times 17 + 1$.\r\n\nSample Input 1 \n\r\nICPC\r\n\nSample Output 1\n\r\n2\r\n\nSample Input 2 \n\r\nCCCIIIPPP\r\n\nSample Output 2\n\r\n69\r\n\nSample Input 3 \n\r\nPICCICCIPPI\r\n\nSample Output 3\n\r\n24\r\n\n In the first sample, the string \"ICPC\" can be represented in the following two ways.\r\n\n A single ICPC-ish string, \"ICPC\".\n Concatenation of four ICPC-ish strings, \"I\", \"C\", \"P\", and \"C\".\n\n Source: https://onlinejudge.u-aizu.ac.jp/problems/1437"
+      },
+      {
+        "role": "assistant",
+        "content": ""
+      }
+    ],
+    "test_cases": [
+      {
+        "input": "ICPC",
+        "output": "2"
+      },
+      {
+        "input": "CCCIIIPPP",
+        "output": "69"
+      },
+      {
+        "input": "PICCICCIPPI",
+        "output": "24"
+      }
+    ],
+    "lang": "ja"
+  },
+  {
+    "problem_id": "3054",
+    "title": "",
+    "url": "https://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=3054",
+    "images": [
+      "3054_2548163147.png"
+    ],
+    "messages": [
+      {
+        "role": "user",
+        "content_ja": "Problem D: Tunnel\nProblem\n\n 横軸$x$、縦軸$y$の$xy$平面上に$n$個の長方形がある。$i$番目の長方形は、高さ$h_i$、幅$1$であり、頂点は点$(i-1, 0)$、点$(i-1, h_i)$、点$(i, h_i)$、点$(i, 0)$である。\n \n あなたは$n$個の正の整数$y_1, y_2, ... y_n$を選び、以下の$n$回の操作を行う。\n\n (1) 1回目の操作では、点$(0, 1)$と点$(1, y_1)$を結ぶ線分を引く。\n (2) $i$回目$(2 \\le i \\le n)$の操作では、点$(i-1, y_{i-1})$と点$(i, y_i)$を結ぶ線分を引く。\n \n $i$回目の操作に対し、$S_i$を以下のように定める。\n \n $i$回目の操作で引いた線分の$x$座標が小さい方の端点をA、$x$座標が大きい方の端点をBとする。\n また、点$(i-1, 0)$をC、点$(i-1, h_i)$をD、点$(i, h_i)$をE 、点$(i, 0)$をFとする。\n 台形ABFCと長方形DEFCの非共通部分の面積を$S_i$とする。\n \n 以下に５つの例を示す。\n \n それぞれの例における$S_i$は星マークを含む領域の面積の合計である。\n \n $S = S_1 + S_2 + … + S_n$を最小化するような$y_1, y_2, ... y_n$を求め、$S$の最小値を出力せよ。\n\nInput\n入力は以下の形式で与えられる。\n\n$n$\n$h_1$ $h_2$ $...$ $h_n$\n\n 入力はすべて整数で与えられる。\n\nConstraints\n入力は以下の条件を満たす。\n\n$2 \\leq n \\leq 150 $\n$1 \\leq h_i \\leq 150 $\n\nOutput\n\n $S$の最小値を1行に出力せよ。\n ただし、$10^{−5}$ までの絶対誤差または相対誤差は許容される。\n\nSample Input 1\n\n2\n5 3\n\nSample Output 1\n\n2.83333333\n\nSample Input 2\n\n3\n6 1 4\n\nSample Output 2\n\n6.25000000\n\nSample Input 3\n\n7\n3 1 9 2 2 5 1\n\nSample Output 3\n\n12.37500000\n\nNote\nLink \n\n Source: https://onlinejudge.u-aizu.ac.jp/problems/3054"
+      },
+      {
+        "role": "assistant",
+        "content": ""
+      }
+    ],
+    "test_cases": [
+      {
+        "input": "2\n5 3",
+        "output": "2.83333333"
+      },
+      {
+        "input": "3\n6 1 4",
+        "output": "6.25000000"
+      },
+      {
+        "input": "7\n3 1 9 2 2 5 1",
+        "output": "12.37500000"
+      }
+    ],
+    "lang": "ja"
+  },
+  {
+    "problem_id": "3269",
+    "title": "",
+    "url": "https://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=3269",
+    "images": [
+      "3269_3677360435.png"
+    ],
+    "messages": [
+      {
+        "role": "user",
+        "content_ja": "LCM Tour\n問題\nOsaka 王国には、$1$ から $N$ までの整数の番号がつけられた $N$ 個の都市があります。Daigaku 君は、都市 $1$ を出発して都市 $N$ で終えるツアーを計画しています。\nOsaka 王国には $M$ 本の一方通行の道があり、それぞれの道には 魅力度 を表す正の整数が付けられています。$i$ 番目 ($1 \\leq i \\leq M$) の道の出発点は都市 $a_i$ 、到着点は都市 $b_i$ で、その魅力度は $c_i$ です。$i$ 番目の道を通って都市 $a_i$ から都市 $b_i$ まで移動することができますが、$a_i \\neq b_i$ のときは $i$ 番目の道を通って $b_i$ から $a_i$ へ逆向きに移動することはできません。なお、同じ出発点と到着点の組に対して複数の道が存在したり、出発点と到着点が同一の都市である道が存在したりする場合があります。\nツアーの道順は $1$ 本以上の道からなり、以下の条件を満たします。\n\n最初の道の出発点は都市 $1$ である\n最後の道の到着点は都市 $N$ である\n到着点が $x$ の道の次に道を通行する場合、その出発点は $x$ である\n同じ都市を何回訪れてもよく、同じ道を何回通行しても良い\n都市 $N$ に到着した後も、ツアーを終了することなく都市 $N$ を出発点としている道を通行しても良い\n\n道順が上の条件を満たすツアーの魅力度は、ツアーの中で通行した道の魅力度の最小公倍数です。\n条件を満たすようなツアーのうち、魅力度が最小になるものの魅力度と最大になるものの魅力度を求めてください。ただし条件を満たすようなツアーが存在しないとき、代わりに IMPOSSIBLE と出力してください。\n制約\n\n$2 \\leq N \\leq 1000$\n$0 \\leq M \\leq 2000$\n$1 \\leq a_i \\leq N$\n$1 \\leq b_i \\leq N$\n$1 \\leq c_i \\leq 20$\n入力はすべて整数\n\n入力\n入力は以下の形式で標準入力から与えられます。\n\n$N$ $M$\n$a_1$ $b_1$ $c_1$\n$a_2$ $b_2$ $c_2$\n$\\vdots$\n$a_M$ $b_M$ $c_M$\n\n出力\n条件を満たすようなツアーが存在するとき、魅力度の最小値を $A$ 、最大値を $B$ として以下の形式で出力してください。\n\nA B\n\n条件を満たすようなツアーが存在しないとき、IMPOSSIBLE と1行に出力してください。\n入力例 1\n\n3 3\n1 2 4\n1 3 7\n2 3 6\n\n出力例 1\n\n7 12\n\n最小値を満たす道順は、道 $2$ のみを通行するときで、このときの魅力度は $7$ です。\n最大値を満たす道順は、道 $1$、道 $3$をこの順に通行するときです。このとき、魅力度は $4$ と $6$ の最小公倍数、つまり $12$ です。\n入力例 2\n\n3 0\n\n出力例 2\n\nIMPOSSIBLE\n\n入力例 3\n\n5 7\n1 2 2\n1 3 3\n2 3 6\n3 4 2\n4 4 7\n4 5 10\n5 3 11\n\n出力例 3\n\n30 2310\n\n Source: https://onlinejudge.u-aizu.ac.jp/problems/3269"
+      },
+      {
+        "role": "assistant",
+        "content": ""
+      }
+    ],
+    "test_cases": [
+      {
+        "input": "3 3\n1 2 4\n1 3 7\n2 3 6",
+        "output": "7 12"
+      },
+      {
+        "input": "3 0",
+        "output": "IMPOSSIBLE"
+      },
+      {
+        "input": "5 7\n1 2 2\n1 3 3\n2 3 6\n3 4 2\n4 4 7\n4 5 10\n5 3 11",
+        "output": "30 2310"
+      }
+    ],
+    "lang": "ja"
+  }
+]
