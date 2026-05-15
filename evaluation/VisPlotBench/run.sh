@@ -24,16 +24,39 @@ set -euo pipefail
 #        eval-logs/       (evaluation logs per language)
 # ==============================================================================
 
+# ---- Tool PATH (defensive, no installation) ---------------------------------
+# Some IDE / cron / nohup shells don't source ~/.profile, so /Library/TeX/texbin
+# and /opt/homebrew/bin may be missing → asy / lualatex / lilypond report as
+# "binary not found" even though they ARE installed. We just add the directories
+# to PATH *if* they already exist on disk; we never install anything here.
+for _p in \
+    /Library/TeX/texbin \
+    /opt/homebrew/bin /opt/homebrew/sbin \
+    /usr/local/bin
+do
+    if [ -d "$_p" ] && [[ ":${PATH}:" != *":${_p}:"* ]]; then
+        PATH="${_p}:${PATH}"
+    fi
+done
+export PATH
+
 # ---- Defaults ----------------------------------------------------------------
 RUN_ID=1
 SKIP_EXEC=false
 SKIP_EVAL=false
 LANG_FILTER=""
+SKIP_PREFLIGHT=false
 
 # ---- Evaluation config (edit as needed) --------------------------------------
-JUDGE_MODEL=gpt-4.1
-JUDGE_BASE_URL=https://az.gptplus5.com/v1
-export OPENAI_API_KEY="${OPENAI_API_KEY:-sk-HuO5OBUwf8h7wuUncEdyflAVQc2Z8pqpi3WQtpOnoyO0whER}"
+JUDGE_MODEL="${JUDGE_MODEL:-gpt-4.1}"
+JUDGE_BASE_URL="${JUDGE_BASE_URL:-https://api.openai.com/v1}"
+# OPENAI_API_KEY must be exported by the user (e.g. in shell rc or .env).
+# We intentionally do NOT ship a default key — open-source safety.
+if [ -z "${OPENAI_API_KEY:-}" ]; then
+    echo "ERROR: OPENAI_API_KEY is not set."
+    echo "  export OPENAI_API_KEY=\"sk-...\"   # then re-run"
+    exit 2
+fi
 
 # ---- Parallelism config -----------------------------------------------------
 TOTAL_WORKERS=32        # execution: total process pool budget
@@ -51,9 +74,64 @@ while [[ $# -gt 0 ]]; do
         --skip-eval) SKIP_EVAL=true; shift ;;
         --force)     FORCE_RESCORE=true; shift ;;
         --lang|-l)   LANG_FILTER="${LANG_FILTER:+${LANG_FILTER},}$2"; shift 2 ;;
+        --skip-preflight) SKIP_PREFLIGHT=true; shift ;;
         *) echo "Unknown arg: $1"; exit 1 ;;
     esac
 done
+
+# ---- Preflight: warn about missing system tools / Python packages -----------
+# We only WARN — installation is the user's responsibility (see setup.sh / README).
+# Pass --skip-preflight to bypass.
+_warn_missing() {
+    local tool="$1"; local langs="$2"; local hint="$3"
+    echo "  [WARN] '${tool}' not found on PATH — languages affected: ${langs}"
+    echo "         install hint: ${hint}"
+    MISSING_TOOLS=$((MISSING_TOOLS + 1))
+}
+if [ "$SKIP_PREFLIGHT" = false ]; then
+    MISSING_TOOLS=0
+    command -v asy        >/dev/null 2>&1 || _warn_missing asy      "asymptote" "brew install asymptote   (or install TeX Live)"
+    command -v lualatex   >/dev/null 2>&1 || _warn_missing lualatex "latex"     "install MacTeX / TeX Live"
+    command -v lilypond   >/dev/null 2>&1 || _warn_missing lilypond "lilypond"  "brew install lilypond"
+    command -v node       >/dev/null 2>&1 || _warn_missing node     "mermaid, vegalite" "brew install node"
+    # Python-side preflight (uses `python` from current env).
+    # `|| true` so a missing python binary doesn't kill us under `set -e`.
+    PY_MISSING=$(python - <<'PY' 2>/dev/null || true
+import importlib.util
+need = {
+    "pandas": "core", "nbformat": "notebook", "nbconvert": "notebook",
+    "playwright": "html/svg", "PIL": "image", "omegaconf": "config",
+    "tqdm": "progress", "httpx": "judge-api",
+    "matplotlib": "python plots", "numpy": "python plots",
+    "scipy": "python plots", "seaborn": "python plots",
+}
+miss = [f"{m} ({need[m]})" for m in need if importlib.util.find_spec(m) is None]
+print("|".join(miss))
+PY
+)
+    if [ -n "$PY_MISSING" ]; then
+        IFS='|' read -ra MISS <<< "$PY_MISSING"
+        for m in "${MISS[@]}"; do
+            echo "  [WARN] python package missing: ${m}"
+        done
+        echo "         install hint: pip install -r requirements.txt   (or run ./setup.sh)"
+        MISSING_TOOLS=$((MISSING_TOOLS + ${#MISS[@]}))
+    fi
+    # Chromium for playwright (only if playwright itself is installed)
+    if python -c "import playwright" 2>/dev/null; then
+        if ! python -c "from playwright.sync_api import sync_playwright; p=sync_playwright().start(); p.chromium.executable_path; p.stop()" 2>/dev/null; then
+            echo "  [WARN] playwright chromium not installed — html samples will all fail"
+            echo "         install hint: playwright install chromium"
+            MISSING_TOOLS=$((MISSING_TOOLS + 1))
+        fi
+    fi
+    if [ "$MISSING_TOOLS" -gt 0 ]; then
+        echo ""
+        echo "  ${MISSING_TOOLS} missing dependency warning(s) — affected languages will report all-fail."
+        echo "  Run ./setup.sh to install everything, OR pass --skip-preflight to ignore."
+        echo ""
+    fi
+fi
 
 # ---- Resolve paths -----------------------------------------------------------
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"

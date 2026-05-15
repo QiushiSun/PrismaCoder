@@ -2,6 +2,7 @@ import argparse
 import math
 import os
 import signal
+import subprocess
 import time
 import traceback
 from collections import Counter
@@ -86,9 +87,53 @@ def _execute_chunk(
         return _make_error_records(shard_rows, error_msg)
 
 
+def _descendant_pids(pid: int) -> list[int]:
+    """Walk the process tree rooted at ``pid`` (exclusive) and return every
+    descendant PID. Uses stdlib + ``pgrep`` so we don't pull in psutil.
+
+    Returns empty list if ``pgrep`` is unavailable (e.g. minimal containers);
+    in that case only the direct worker is killed and any orphaned ipykernel
+    will be reaped by init at exit. We log a hint in that path.
+    """
+    descendants: list[int] = []
+    stack = [pid]
+    while stack:
+        cur = stack.pop()
+        try:
+            res = subprocess.run(
+                ["pgrep", "-P", str(cur)],
+                capture_output=True, text=True, timeout=3,
+            )
+        except (FileNotFoundError, subprocess.TimeoutExpired):
+            return descendants
+        if res.returncode != 0:
+            continue
+        for line in res.stdout.split():
+            try:
+                child = int(line)
+            except ValueError:
+                continue
+            descendants.append(child)
+            stack.append(child)
+    return descendants
+
+
 def _force_kill_pool(pool: ProcessPoolExecutor) -> None:
-    """Send SIGKILL to all worker processes in the pool."""
-    for pid in list(getattr(pool, "_processes", {}).keys()):
+    """SIGKILL every worker AND every descendant (ipykernel etc.).
+
+    ``ProcessPoolExecutor`` only tracks its direct workers, so when a shard
+    times out the Jupyter kernels spawned via ``nbconvert`` are left as
+    orphans (consuming a kernel slot + CPU until the OS reaps them).  We
+    walk the tree ourselves before sending SIGKILL so the next ``./run.sh``
+    starts from a clean state.
+    """
+    worker_pids = list(getattr(pool, "_processes", {}).keys())
+    all_pids: list[int] = []
+    for wpid in worker_pids:
+        all_pids.extend(_descendant_pids(wpid))
+        all_pids.append(wpid)
+    # Kill children before parents so kernel managers can't respawn.
+    for pid in sorted(set(all_pids), reverse=True):
         try:
             os.kill(pid, signal.SIGKILL)
         except (ProcessLookupError, PermissionError):

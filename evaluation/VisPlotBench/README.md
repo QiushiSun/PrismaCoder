@@ -4,6 +4,42 @@ An optimized execution and eval pipeline for [VisPlotBench](https://huggingface.
 
 This pipeline is built on top of the original VisPlotBench evaluation protocol and introduces several improvements in execution robustness, parallelism, and reporting.
 
+## Setup
+
+You need to install dependencies **once** before running the pipeline. We do NOT
+auto-install anything when you call `run.sh` — your environment, your call.
+
+### Option A: one-shot installer (recommended)
+
+```bash
+./setup.sh              # python deps + playwright chromium + tool check
+./setup.sh --py-only    # only pip install -r requirements.txt
+./setup.sh --check      # don't install anything, just report what's missing
+```
+
+### Option B: manual
+
+```bash
+# 1. Python deps (manifest is the source of truth)
+pip install -r requirements.txt
+
+# 2. Playwright browser (needed for html / svg samples)
+playwright install chromium
+
+# 3. External CLI tools (only the ones for the languages you care about)
+#    macOS examples:
+brew install asymptote lilypond node
+brew install --cask mactex      # for latex / lualatex
+npm i -g @mermaid-js/mermaid-cli  # for mermaid
+
+# 4. Judge API key
+export OPENAI_API_KEY="sk-..."
+```
+
+> `run.sh` runs a quick preflight check on every invocation and prints a
+> warning (not an error) for any missing tool, so you'll know exactly which
+> install step you skipped. Pass `--skip-preflight` to silence it.
+
 ## Usage
 
 ### Quick Start
@@ -65,49 +101,41 @@ python aggregate_results.py \
     --agg-md vpb-results-agg.md
 ```
 
-## Dependencies
+## Dependencies (reference)
 
 ### Python Packages
 
-| Package | Purpose |
-|---|---|
-| `pandas` | DataFrame operations for dataset handling |
-| `openpyxl` | Excel report generation |
-| `nbformat` | Jupyter notebook creation and parsing |
-| `nbconvert` | Notebook execution (`ExecutePreprocessor`) |
-| `playwright` | HTML / SVG rendering (Chromium headless) |
-| `Pillow` | Image processing and format conversion |
-| `omegaconf` | Configuration management |
-| `nest-asyncio` | Nested async event loop support (for Jupyter) |
-| `tqdm` | Progress bars |
-| `httpx` | Async HTTP client for LLM API calls |
-| `aiohttp` | Async HTTP (alternative client) |
+Authoritative list lives in [`requirements.txt`](./requirements.txt). At a glance:
 
-Install Python dependencies:
-
-```bash
-pip install pandas openpyxl nbformat nbconvert playwright Pillow omegaconf nest-asyncio tqdm httpx aiohttp
-playwright install chromium
-```
+| Group | Packages | Why |
+|---|---|---|
+| Harness | `pandas` `openpyxl` `nbformat` `nbconvert` `ipykernel` `omegaconf` `nest-asyncio` `tqdm` `httpx` `aiohttp` | core eval pipeline |
+| Rendering | `playwright` `Pillow` | html / svg / image diff |
+| Python lane | `matplotlib` `numpy` `scipy` `seaborn` `networkx` `scikit-learn` | needed for the model-generated Python samples to **execute at all** — without them the `python` language reports 100% `ModuleNotFoundError` |
 
 ### External Tools
 
 | Tool | Languages | Install |
 |---|---|---|
 | Chromium (via Playwright) | HTML, SVG | `playwright install chromium` |
-| `pdflatex` | LaTeX | TeX distribution (e.g. MacTeX, TeX Live) |
-| `asy` (Asymptote) | Asymptote | Bundled with TeX or `brew install asymptote` |
+| `pdflatex` / `lualatex` | LaTeX | TeX distribution (MacTeX, TeX Live) |
+| `asy` (Asymptote) | Asymptote | bundled with TeX, or `brew install asymptote` |
 | `lilypond` | LilyPond | `brew install lilypond` |
-| `mmdc` (Mermaid CLI) | Mermaid | `cd plotting_benchmark/language_utils/env && npm install` |
+| `mmdc` (Mermaid CLI) | Mermaid | `npm i -g @mermaid-js/mermaid-cli` |
 | Node.js | Vega-Lite, Mermaid | `brew install node` |
 
-### Environment Variable
+`run.sh` defensively adds `/Library/TeX/texbin`, `/opt/homebrew/bin`, etc. to
+`PATH` if those directories exist, so tools installed via standard Mac/Linux
+package managers will be discoverable even from non-login shells.
+
+### API key
 
 ```bash
-export OPENAI_API_KEY="your-api-key"
+export OPENAI_API_KEY="sk-..."   # required, no default shipped
 ```
 
-The judge model endpoint and API key are configured in `run.sh` (variables `JUDGE_MODEL`, `JUDGE_BASE_URL`, `OPENAI_API_KEY`).
+The judge endpoint defaults to `https://api.openai.com/v1`. Override with
+`JUDGE_BASE_URL` / `JUDGE_MODEL` env vars if you use a proxy.
 
 ## Configuration
 
