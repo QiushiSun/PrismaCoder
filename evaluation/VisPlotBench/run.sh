@@ -13,6 +13,11 @@ set -euo pipefail
 #    ./run.sh --force                  # ignore cached scores
 #    ./run.sh --run-id 7 --lang html   # only run html
 #    ./run.sh --lang html,mermaid      # run multiple selected languages
+#    ./run.sh --python-subproc         # alias for --python-exec-mode subprocess
+#                                      # (each python sample = isolated process,
+#                                      #  rescues samples that the legacy
+#                                      #  ipykernel path would have killed as
+#                                      #  "Shard timed out").
 #
 #  Folder layout:
 #    runs/
@@ -46,6 +51,12 @@ SKIP_EXEC=false
 SKIP_EVAL=false
 LANG_FILTER=""
 SKIP_PREFLIGHT=false
+PYTHON_EXEC_MODE="jupyter"   # 'jupyter' (legacy, default) | 'subprocess'
+PYTHON_SUBPROC_TIMEOUT=30     # per-sample timeout, subprocess mode only
+PYTHON_SUBPROC_PARALLEL=1     # subprocesses within one shard.  Keep at 1 on
+                              # macOS — nesting Popen inside ThreadPool inside
+                              # ProcessPool hangs unpredictably.  Outer
+                              # --workers handles real parallelism.
 
 # ---- Evaluation config (edit as needed) --------------------------------------
 JUDGE_MODEL="${JUDGE_MODEL:-gpt-4.1}"
@@ -75,9 +86,18 @@ while [[ $# -gt 0 ]]; do
         --force)     FORCE_RESCORE=true; shift ;;
         --lang|-l)   LANG_FILTER="${LANG_FILTER:+${LANG_FILTER},}$2"; shift 2 ;;
         --skip-preflight) SKIP_PREFLIGHT=true; shift ;;
+        --python-exec-mode) PYTHON_EXEC_MODE="$2"; shift 2 ;;
+        --python-subproc)   PYTHON_EXEC_MODE="subprocess"; shift ;;
+        --python-subproc-timeout)  PYTHON_SUBPROC_TIMEOUT="$2"; shift 2 ;;
+        --python-subproc-parallel) PYTHON_SUBPROC_PARALLEL="$2"; shift 2 ;;
         *) echo "Unknown arg: $1"; exit 1 ;;
     esac
 done
+
+case "$PYTHON_EXEC_MODE" in
+    jupyter|subprocess) ;;
+    *) echo "ERROR: --python-exec-mode must be 'jupyter' or 'subprocess' (got '${PYTHON_EXEC_MODE}')"; exit 1 ;;
+esac
 
 # ---- Preflight: warn about missing system tools / Python packages -----------
 # We only WARN — installation is the user's responsibility (see setup.sh / README).
@@ -251,18 +271,45 @@ EXEC_START=$(date +%s)
 
 echo ""
 echo "  [EXECUTION] ${TOTAL_LANGS} languages  |  Workers: ${TOTAL_WORKERS} (${PER_LANG_W}/lang)  |  Shard: ${SHARD_SIZE}  |  Timeout: ${EXEC_TIMEOUT}s"
+if [ "$PYTHON_EXEC_MODE" = "subprocess" ]; then
+    echo "  [python-exec-mode] subprocess  |  per-sample timeout=${PYTHON_SUBPROC_TIMEOUT}s  |  intra-shard parallel=${PYTHON_SUBPROC_PARALLEL}"
+fi
 echo ""
 
 EXEC_PIDS=()
 for LANG in "${LANGUAGES[@]}"; do
     LOG="${EXEC_LOG_DIR}/${LANG}.log"
+    EXTRA_ARGS=()
+    LANG_SHARD_SIZE=${SHARD_SIZE}
+    LANG_WORKERS=${PER_LANG_W}
+
+    if [ "$LANG" = "python" ] && [ "$PYTHON_EXEC_MODE" = "subprocess" ]; then
+        # In subprocess mode each sample IS its own python process, so a
+        # multi-sample shard isn't doing any useful batching anymore.  Force
+        # shard-size=1 so one hung sample only blocks that one worker (the
+        # whole point of switching modes in the first place).
+        #
+        # Workers: cap at 16 by default — empirically ~16 concurrent python
+        # spawns is the macOS sweet spot before the fork/font-cache lock
+        # tank throughput.  Override via SUBPROC_WORKERS=N env var.
+        LANG_SHARD_SIZE=1
+        LANG_WORKERS="${SUBPROC_WORKERS:-16}"
+        EXTRA_ARGS+=(--python-exec-mode subprocess
+                     --python-subproc-timeout "${PYTHON_SUBPROC_TIMEOUT}"
+                     --python-subproc-parallel "${PYTHON_SUBPROC_PARALLEL}")
+    fi
+
+    # ${EXTRA_ARGS[@]+"${EXTRA_ARGS[@]}"} expands to nothing when the array
+    # is empty, side-stepping the `set -u` "unbound variable" trap on plain
+    # ${EXTRA_ARGS[@]} for empty arrays in bash.
     python execution.py \
         --work-dir "${RUN_DIR}/runs-${RUN_ID}-${LANG}/" \
-        --workers ${PER_LANG_W} \
-        --shard-size ${SHARD_SIZE} \
-        --timeout ${EXEC_TIMEOUT} > "${LOG}" 2>&1 &
+        --workers ${LANG_WORKERS} \
+        --shard-size ${LANG_SHARD_SIZE} \
+        --timeout ${EXEC_TIMEOUT} \
+        ${EXTRA_ARGS[@]+"${EXTRA_ARGS[@]}"} > "${LOG}" 2>&1 &
     EXEC_PIDS+=($!)
-    echo "    Started ${LANG} (PID $!) -> ${LOG}"
+    echo "    Started ${LANG} (PID $!, shard=${LANG_SHARD_SIZE}, workers=${LANG_WORKERS}) -> ${LOG}"
 done
 
 echo ""

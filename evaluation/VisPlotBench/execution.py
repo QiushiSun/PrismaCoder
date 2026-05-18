@@ -59,15 +59,20 @@ def _execute_chunk(
     csv_dir: str | None,
     shard_rows: list[dict[str, Any]],
     shard_dir: str,
+    handler_extra: dict[str, Any] | None = None,
 ) -> list[dict[str, Any]]:
     try:
-        cfg = OmegaConf.create(
-            {
-                "plotting_language": language,
-                "run_mode": "normal",
-                "debug": {"output_dir": str(Path(shard_dir) / "debug")},
-            }
-        )
+        cfg_dict: dict[str, Any] = {
+            "plotting_language": language,
+            "run_mode": "normal",
+            "debug": {"output_dir": str(Path(shard_dir) / "debug")},
+        }
+        # handler_extra is plumbed through from main() and lets us flip the
+        # Python handler into subprocess mode without touching every other
+        # language's contract (they'll just ignore the extra keys).
+        if handler_extra:
+            cfg_dict.update(handler_extra)
+        cfg = OmegaConf.create(cfg_dict)
         handler = get_language_handler(language, config=OmegaConf.to_container(cfg, resolve=True))
         df = pd.DataFrame(shard_rows)
         out_nb = Path(shard_dir) / f"plots_{language}.ipynb"
@@ -201,6 +206,19 @@ def main(args: argparse.Namespace) -> None:
     failed_shards = 0
     t0 = time.time()
 
+    # Build per-language handler extras.  Only python+subprocess uses this
+    # today; everything else gets ``{}`` which is a no-op in _execute_chunk.
+    handler_extra: dict[str, Any] = {}
+    if language == "python" and getattr(args, "python_exec_mode", "jupyter") == "subprocess":
+        handler_extra["python_exec_mode"] = "subprocess"
+        handler_extra["python_subproc_timeout"] = float(args.python_subproc_timeout)
+        handler_extra["python_subproc_parallel"] = int(args.python_subproc_parallel)
+        print(
+            f"  [python-exec-mode] subprocess  "
+            f"per-sample timeout={args.python_subproc_timeout}s  "
+            f"intra-shard parallel={args.python_subproc_parallel}"
+        )
+
     pool = ProcessPoolExecutor(max_workers=workers)
     fut_map: dict[Any, int] = {}
     for shard_id, shard in enumerate(shards):
@@ -211,6 +229,7 @@ def main(args: argparse.Namespace) -> None:
             str(csv_dir) if csv_dir else None,
             shard,
             str(shard_root / f"shard_{shard_id}"),
+            handler_extra,
         )
         fut_map[fut] = shard_id
 
@@ -278,4 +297,24 @@ if __name__ == "__main__":
                         help="Total timeout in seconds for all shards. "
                              "Shards still running after this are marked as errors. "
                              "Default: 600 (10 min).")
+    parser.add_argument("--python-exec-mode", choices=["jupyter", "subprocess"],
+                        default="jupyter",
+                        help="Python execution backend. "
+                             "'jupyter' (default): legacy nbconvert + ipykernel. "
+                             "'subprocess': run each sample in its own python "
+                             "process with monkey-patched plt.show / Figure.show / "
+                             "etc.  Avoids ipykernel hangs + orphan kernels.  "
+                             "Only affects language=python; other languages ignore it.")
+    parser.add_argument("--python-subproc-timeout", type=float, default=30.0,
+                        help="Per-sample wall-clock timeout (seconds) when "
+                             "--python-exec-mode=subprocess. Default: 30s.")
+    parser.add_argument("--python-subproc-parallel", type=int, default=1,
+                        help="How many subprocesses to run in parallel within "
+                             "a single shard when --python-exec-mode=subprocess. "
+                             "Default 1 (sequential within shard); rely on the "
+                             "outer ProcessPoolExecutor (--workers) for "
+                             "parallelism.  Nesting subprocess.Popen inside "
+                             "ThreadPool inside ProcessPool causes hangs on "
+                             "macOS — keep at 1 unless you've validated >1 "
+                             "in your env.")
     main(parser.parse_args())

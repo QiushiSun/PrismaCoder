@@ -546,22 +546,38 @@ class PythonHandler(LanguageHandler):
     
     def build_plots(self, dataset: pd.DataFrame, output_path: Path, csv_folder: Path) -> None:
         """
-        Build plots as a Jupyter notebook.
-        
+        Build plots and write a notebook with per-sample outputs.
+
+        Backend is chosen by ``config["python_exec_mode"]``:
+
+        * ``"jupyter"`` (default, unchanged) — legacy ``nbconvert`` +
+          ``ipykernel`` path.  Best throughput when samples are healthy.
+        * ``"subprocess"`` — run each sample in its own isolated python
+          process with monkey-patched ``plt.show`` / ``Figure.show`` etc.
+          One hung sample only kills that one sample, instead of dragging
+          down the whole shard.  See ``python_subprocess.py`` for details.
+
         Args:
             dataset: DataFrame containing code to visualize
             output_path: Path to save the output notebook
             csv_folder: Path to folder containing CSV data files
         """
-        # Generate all code blocks
         cells = dataset.apply(
             self.generate_code, axis=1, args=(csv_folder,)
         ).tolist()
-        
-        # Build notebook
+
+        cfg = self.config or {}
+        mode = str(cfg.get("python_exec_mode", "jupyter")).lower()
+
+        if mode == "subprocess":
+            self._build_plots_subprocess(dataset, cells, output_path, cfg)
+        else:
+            self._build_plots_jupyter(cells, output_path)
+
+    def _build_plots_jupyter(self, cells: list, output_path: Path) -> None:
+        """Legacy nbconvert + ipykernel path. Behaviour unchanged."""
         self.build_new_nb(cells, output_path)
-        
-        # Read and execute notebook
+
         with open(output_path, encoding="utf-8") as f:
             nb = nbf.read(f, as_version=4)
 
@@ -574,7 +590,7 @@ class PythonHandler(LanguageHandler):
                         print(f"[DEBUG] Executing cell {cell_index + 1}/{len(nb.cells)} - ID: {cell_id}")
                     else:
                         print(f"[DEBUG] Executing cell {cell_index + 1}/{len(nb.cells)}")
-                
+
                 try:
                     cell, resources = super().preprocess_cell(cell, resources, cell_index)
                     print(f"[DEBUG] Cell {cell_index + 1} completed successfully")
@@ -586,7 +602,7 @@ class PythonHandler(LanguageHandler):
         ep = DebugExecutePreprocessor(
             timeout=30,
             interrupt_on_timeout=True,
-            allow_errors=True, 
+            allow_errors=True,
             kernel_name="python3",
         )
 
@@ -597,7 +613,41 @@ class PythonHandler(LanguageHandler):
 
         with open(output_path, "w", encoding="utf-8") as f:
             nbf.write(nb, f)
-        
+
+        print(f"Python plots notebook saved to {output_path}")
+
+    def _build_plots_subprocess(
+        self, dataset: pd.DataFrame, cells: list, output_path: Path, cfg: Dict[str, Any]
+    ) -> None:
+        """Per-sample subprocess executor (see python_subprocess.py).
+
+        Each ``cells`` entry already starts with ``# id = <sample_id>`` —
+        we hand the (id, code) tuples to ``run_shard_subprocess`` which
+        synthesises an ``.ipynb`` matching what ``parse_plots_notebook``
+        expects, so downstream code paths are unchanged.
+        """
+        from .python_subprocess import run_shard_subprocess
+
+        ids = list(dataset["id"])
+        if len(ids) != len(cells):
+            raise RuntimeError(
+                f"Mismatched cells/ids: {len(cells)} cells vs {len(ids)} ids"
+            )
+        per_sample_timeout = float(cfg.get("python_subproc_timeout", 30.0))
+        parallel = int(cfg.get("python_subproc_parallel", 1))
+
+        print(
+            f"[python-subprocess] {len(cells)} samples, "
+            f"per-sample timeout={per_sample_timeout}s, "
+            f"intra-shard parallel={parallel}"
+        )
+        run_shard_subprocess(
+            cells=list(zip(ids, cells)),
+            shard_dir=output_path.parent,
+            output_path=output_path,
+            timeout=per_sample_timeout,
+            parallel=parallel,
+        )
         print(f"Python plots notebook saved to {output_path}")
 
     def build_new_nb(self, blocks: list, plots_nb_path: Path) -> None:
