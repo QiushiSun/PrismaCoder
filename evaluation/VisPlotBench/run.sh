@@ -52,7 +52,11 @@ SKIP_EVAL=false
 LANG_FILTER=""
 SKIP_PREFLIGHT=false
 PYTHON_EXEC_MODE="jupyter"   # 'jupyter' (legacy, default) | 'subprocess'
-PYTHON_SUBPROC_TIMEOUT=30     # per-sample timeout, subprocess mode only
+PYTHON_SUBPROC_TIMEOUT=60     # per-sample timeout, subprocess mode only.
+                              # 60s (not 30s) so modern SFT'd models that emit
+                              # heavier matplotlib code (more subplots / large
+                              # linspace / dense scatter) don't get false-
+                              # positive killed before they finish rendering.
 PYTHON_SUBPROC_PARALLEL=1     # subprocesses within one shard.  Keep at 1 on
                               # macOS — nesting Popen inside ThreadPool inside
                               # ProcessPool hangs unpredictably.  Outer

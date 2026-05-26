@@ -305,9 +305,11 @@ if __name__ == "__main__":
                              "process with monkey-patched plt.show / Figure.show / "
                              "etc.  Avoids ipykernel hangs + orphan kernels.  "
                              "Only affects language=python; other languages ignore it.")
-    parser.add_argument("--python-subproc-timeout", type=float, default=30.0,
+    parser.add_argument("--python-subproc-timeout", type=float, default=60.0,
                         help="Per-sample wall-clock timeout (seconds) when "
-                             "--python-exec-mode=subprocess. Default: 30s.")
+                             "--python-exec-mode=subprocess. Default: 60s "
+                             "(bumped from 30s — SFT'd models emit heavier "
+                             "matplotlib code that legitimately needs ~30-50s).")
     parser.add_argument("--python-subproc-parallel", type=int, default=1,
                         help="How many subprocesses to run in parallel within "
                              "a single shard when --python-exec-mode=subprocess. "
