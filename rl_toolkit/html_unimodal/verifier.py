@@ -1,21 +1,21 @@
-"""HTML-language RL verifier for VisPlotBench.
+"""HTML-language RL verifier.
 
-The HTML handler renders pages via a shared playwright/chromium browser
-launched inside the execution notebook. If chromium is missing or
-broken, every sample in the shard fails with a single generic ``Browser
-setup failed`` message, which is unhelpful as an RL signal. This
-subclass adds a preflight probe: we launch chromium once from the
-parent process before any worker is spawned. On failure we short-
-circuit the whole batch with the verbatim error string, so the trainer
-can immediately tell that the env is broken — not that the policy
-regressed.
+The HTML execution path renders pages via a shared playwright/chromium
+browser launched inside the execution notebook. If chromium is missing
+or broken, every sample in the shard would otherwise fail with a single
+generic ``Browser setup failed`` message — useless as an RL signal.
+
+This subclass adds a parent-process preflight: we launch chromium once
+before any worker is spawned. On failure we short-circuit the whole
+batch with the verbatim error string so the trainer can immediately
+tell that the env is broken — not that the policy regressed.
 """
 
 from __future__ import annotations
 
 from dataclasses import dataclass
 
-from .verifier_base import PlottingRLVerifier, PlottingRLVerifierConfig
+from ..plotting_verifier_base import PlottingRLVerifier, PlottingRLVerifierConfig
 
 
 @dataclass
@@ -26,8 +26,8 @@ class HTMLVerifierConfig(PlottingRLVerifierConfig):
 
 class HTMLRLVerifier(PlottingRLVerifier):
     language = "html"
-    # The HTML handler injects CSV payloads into the page (csv_to_list_of_dicts),
-    # so CSV export is still required.
+    # The HTML execution path injects CSV payloads into the page, so CSV
+    # export is still required.
     csv_export_enabled = True
 
     @classmethod

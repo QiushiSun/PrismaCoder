@@ -1,28 +1,23 @@
-"""Base infrastructure for the PrismaCoder VisPlotBench RL verifiers.
+"""Shared base for code-plotting RL verifiers.
 
-Provides ``PlottingRLVerifierConfig`` (dataclass) + ``PlottingRLVerifier``
-(base class) that encapsulate the full generation -> execution ->
-evaluation pipeline used to derive per-sample RL rewards and aggregate
-metrics for VisPlotBench.
+Implements the generic three-stage pipeline (generation -> execution ->
+evaluation) used to derive per-sample RL rewards and aggregate metrics
+for any code-generation modality whose execution amounts to "run the
+sample and judge the rendered plot". Each modality (Python / SVG /
+HTML / ...) only needs to override a small set of hooks.
 
-Subclasses (``PythonRLVerifier`` / ``HTMLRLVerifier`` / ``SVGRLVerifier``)
-only need to override a handful of hooks: ``_handler_config`` (forward
-language-specific runtime knobs into the plotting handler),
-``_preflight`` (env probe, e.g. playwright chromium for HTML), and the
-``language`` / ``csv_export_enabled`` class attributes.
+This module is the shared internal infrastructure for the per-scenario
+subpackages under :mod:`rl_toolkit`. End users normally don't import
+from here directly — they go through
+``rl_toolkit.python_visualization_unimodal`` /
+``rl_toolkit.svg_unimodal`` / ``rl_toolkit.html_unimodal``.
 
-The verifier is a pure-Python class: no CLI, no side effects beyond
-writing to ``config.work_dir``. All API endpoints (both generation and
-judge) are configurable from the entry point, so the same class works
-against either a hosted endpoint or a local judge model in RL.
-
-Harness location:
-    By default we assume this file lives at
-    ``PrismaCoder/rl_toolkit/visplotbench/verifier_base.py`` and the
-    VisPlotBench evaluation harness lives at
-    ``PrismaCoder/evaluation/VisPlotBench/``. Override the location by
-    setting the ``VISPLOTBENCH_HARNESS_ROOT`` environment variable to
-    the absolute path of an ``evaluation/VisPlotBench/`` checkout.
+Internals: the execution + judge pipeline reuses the language handlers,
+dataset loaders, OpenAI-compatible HTTP client, and judge prompts from
+the PrismaCoder VisPlotBench evaluation harness under
+``PrismaCoder/evaluation/VisPlotBench/``. The location is auto-resolved
+at import time and can be overridden with the
+``VISPLOTBENCH_HARNESS_ROOT`` environment variable.
 """
 
 from __future__ import annotations
@@ -40,22 +35,20 @@ from statistics import mean
 from typing import Any
 
 
-# --- VisPlotBench harness resolution -----------------------------------------
-# The verifier imports ``plotting_benchmark``, ``dataset_tools``, ``client``,
-# ``io_utils``, ``logger`` from the VisPlotBench evaluation harness. Resolve
-# its location once at import time, prepend to sys.path so downstream
-# imports just work regardless of the caller's cwd, and surface an
-# actionable error if it's not where we expect.
-_HERE = Path(__file__).resolve().parent
-_DEFAULT_HARNESS_ROOT = _HERE.parent.parent / "evaluation" / "VisPlotBench"
+# --- Evaluation harness resolution -------------------------------------------
+# Locate the canonical evaluation pipeline that ships the language handlers
+# and judge prompts, prepend its root to sys.path, and surface an actionable
+# error if it isn't where we expect.
+_HERE = Path(__file__).resolve().parent  # .../rl_toolkit
+_DEFAULT_HARNESS_ROOT = _HERE.parent / "evaluation" / "VisPlotBench"
 _HARNESS_ROOT = Path(
     os.environ.get("VISPLOTBENCH_HARNESS_ROOT", _DEFAULT_HARNESS_ROOT)
 ).resolve()
 
 if not (_HARNESS_ROOT / "plotting_benchmark").is_dir():
     raise ImportError(
-        f"Cannot locate the VisPlotBench evaluation harness at {_HARNESS_ROOT!s}. "
-        "Either keep this package alongside PrismaCoder/evaluation/VisPlotBench/, "
+        f"Cannot locate the evaluation harness at {_HARNESS_ROOT!s}. "
+        "Either keep rl_toolkit/ next to PrismaCoder/evaluation/VisPlotBench/, "
         "or set the VISPLOTBENCH_HARNESS_ROOT environment variable to point at "
         "an evaluation/VisPlotBench/ checkout (the folder that contains "
         "plotting_benchmark/, dataset_tools.py, client.py, io_utils.py)."
@@ -69,8 +62,7 @@ import pandas as pd  # noqa: E402
 # ``openai`` is only needed for the optional generation stage. RL trainers
 # that hand us rollouts via ``generations_path`` / ``generations_inline``
 # never enter that branch, so we import it lazily inside
-# ``_stage_generation`` instead of at module load. That keeps the import-
-# time dep set minimal — see requirements.txt + README.
+# ``_stage_generation``. That keeps the import-time dep set minimal.
 from client import OpenAICompatClient, image_to_content_part  # noqa: E402
 from dataset_tools import (  # noqa: E402
     export_csv_payloads,
@@ -104,9 +96,9 @@ class PlottingRLVerifierConfig:
     # --- Paths / language --------------------------------------------------
     work_dir: str
     language: str = "python"
-    # ``repo_root`` is forwarded to dataset_tools.load_instructs to locate
+    # Forwarded to dataset_tools.load_instructs to locate
     # plotting_benchmark/resources/instructs.json. Defaults to the harness
-    # root we resolved at import.
+    # root we resolved at import time.
     repo_root: str = str(_HARNESS_ROOT)
 
     # --- Dataset source ----------------------------------------------------
@@ -120,9 +112,9 @@ class PlottingRLVerifierConfig:
     # ``used_lib`` (python only), ``data`` (python/html only) and the
     # ``task__*`` fields consumed by the judge prompt.
     prepared_samples_path: str | None = None
-    # If given, point execution at this CSV dir directly (leaf folder
-    # containing ``{id}.csv``). Otherwise the dataset prep step will
-    # populate ``work_dir/csv/<lang>/``.
+    # If given, point execution at this CSV directory directly (leaf folder
+    # containing ``{id}.csv``). Otherwise the dataset prep step writes into
+    # ``work_dir/csv/<lang>/``.
     csv_dir: str | None = None
 
     # --- Stage switches ----------------------------------------------------
@@ -147,7 +139,7 @@ class PlottingRLVerifierConfig:
     generation_max_tokens: int = 12000
     generation_timeout: float = 600.0
     # Extra fields forwarded as the OpenAI SDK's ``extra_body`` kwarg (vLLM
-    # ``chat_template_kwargs``, etc).
+    # ``chat_template_kwargs``, etc.).
     generation_extra_body: dict[str, Any] = field(default_factory=dict)
     generation_enable_logger: bool = False
     generation_api_logs: str = "./api-logs/generation"
@@ -169,22 +161,20 @@ class PlottingRLVerifierConfig:
     eval_api_logs: str = "./api-logs/judge"
 
     # --- Reward composition ------------------------------------------------
-    # All three components are in [0, 1]; the per-sample reward is a
+    # All three components live in [0, 1]; the per-sample reward is a
     # weighted sum (not normalised, but the default weights sum to 1.0).
     reward_weights: dict[str, float] = field(
         default_factory=lambda: {"exec_ok": 0.2, "vis": 0.4, "task": 0.4}
     )
-    # When execution fails (no plot or runtime error), force reward=0
-    # instead of letting the (zero) score components average up to a
-    # small positive value via the exec_ok=False contribution.
+    # When execution fails (no plot or runtime error), force reward = 0
+    # instead of letting the (zero) score components average up to a small
+    # positive value via the exec_ok=False contribution.
     reward_zero_on_exec_fail: bool = True
 
 
 # ==============================================================================
 #  Module-level helper: execute one shard inside a worker process.
 #  Must live at module scope to be picklable by ProcessPoolExecutor.
-#  Mirrors the logic in evaluation/VisPlotBench/execution.py so behaviour
-#  matches the canonical batch pipeline exactly.
 # ==============================================================================
 def _execute_chunk(
     language: str,
@@ -239,8 +229,7 @@ def _force_kill_pool(pool: ProcessPoolExecutor) -> None:
 def _parse_score(text: str) -> int | None:
     """Extract an integer score from a judge response.
 
-    Matches the parsing used in the canonical evaluation.py: either a
-    bare integer, or the marker line ``[FINAL SCORE]: <int>``.
+    Either a bare integer, or the marker line ``[FINAL SCORE]: <int>``.
     """
     text = (text or "").strip()
     if re.fullmatch(r"\d+", text):
@@ -255,10 +244,10 @@ def _parse_score(text: str) -> int | None:
 #  Base verifier
 # ==============================================================================
 class PlottingRLVerifier:
-    """Generic VisPlotBench RL verifier.
+    """Generic code-plotting RL verifier.
 
     Subclass and override ``language`` + the ``_handler_config`` /
-    ``_preflight`` hooks for per-language behaviour.
+    ``_preflight`` hooks for per-modality behaviour.
     """
 
     language: str = "python"
@@ -445,7 +434,7 @@ class PlottingRLVerifier:
             export_csv_payloads(df, csv_root, language)
             csv_dir = str(csv_root)
         else:
-            csv_dir = cfg.csv_dir  # may be None for svg/mermaid/etc.
+            csv_dir = cfg.csv_dir  # may stay None for svg etc.
 
         instructs = load_instructs(cfg.repo_root, language)
         samples = [

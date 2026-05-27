@@ -1,4 +1,4 @@
-"""SVG-language RL verifier for VisPlotBench.
+"""SVG-language RL verifier.
 
 SVG samples are self-contained (no external CSV payloads), and rendering
 is a simple cairosvg call, so this subclass is almost a pure base
@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from .verifier_base import PlottingRLVerifier, PlottingRLVerifierConfig
+from ..plotting_verifier_base import PlottingRLVerifier, PlottingRLVerifierConfig
 
 
 @dataclass
