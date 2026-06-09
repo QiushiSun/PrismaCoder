@@ -1,5 +1,7 @@
+import os
 import re
 import json
+import base64
 from pathlib import Path
 from typing import Dict, Any
 import pandas as pd
@@ -169,17 +171,39 @@ class LilyPondHandler(LanguageHandler):
             str: The generated code block.
         """
         item_id = str(item["id"])
-        deduped_code = deduplicate_lines(item["code"], max_repeat=5)
-        lilypond_spec = re.sub(
-            r'\\(?!["\\/]|n(?![A-Za-z])|r(?![A-Za-z])|t(?![A-Za-z])|b(?![A-Za-z])|f(?![A-Za-z])|u[0-9a-fA-F]{4})',
-            r'\\\\',
-            deduped_code
-        )
-        lilypond_spec = lilypond_spec.replace('\\\\\\', '\\\\')
+        lilypond_spec = deduplicate_lines(item["code"], max_repeat=5)
+
+        # Normalize models that emit every LilyPond command with a doubled
+        # backslash (``\\version`` instead of ``\version``) -- an artifact of
+        # training on JSON-escaped sources. This collapses a doubled backslash
+        # ONLY when it precedes a letter (a command name), leaving the
+        # legitimate LilyPond ``\\`` voice-separator token (used in
+        # ``<< { .. } \\ { .. } >>``) intact, and is a no-op for models that
+        # already emit single backslashes.
+        #
+        # ON by default: the previous ``'''...'''`` embedding silently halved
+        # these doubled backslashes when Python parsed the (non-raw) string
+        # literal, so historical scores were already computed under this
+        # leniency. Keeping it ON preserves backward-compatible numbers; the
+        # base64 embedding below no longer does any implicit unescaping. Set
+        # config key ``lilypond_normalize_backslashes`` / env var
+        # ``LILYPOND_NORMALIZE_BACKSLASHES`` to 0 for strict mode.
+        if self._normalize_backslashes():
+            lilypond_spec = re.sub(r'\\\\(?=[A-Za-z])', r'\\', lilypond_spec)
+
+        # Embed the source via base64 instead of interpolating it into a Python
+        # ``'''...'''`` literal. LilyPond is dense with single quotes (octave
+        # marks) and has single-letter note names (b/f/r), so raw interpolation
+        # produced accidental ``b'''`` / ``f'''`` / ``r'''`` bytes-literal
+        # prefixes and quote-imbalance SyntaxErrors that killed otherwise-valid
+        # scores in the Python cell before LilyPond was ever invoked.
+        spec_b64 = base64.b64encode(lilypond_spec.encode("utf-8")).decode("ascii")
+        id_b64 = base64.b64encode(item_id.encode("utf-8")).decode("ascii")
 
         code_blocks = [f"# id = {item_id}"]
         code_blocks.extend([
             "import os",
+            "import base64",
             "import tempfile",
             "import subprocess",
             "import random",
@@ -245,11 +269,19 @@ class LilyPondHandler(LanguageHandler):
                 pass
     '''.strip(),
             "",
-            f"item_id = '''{item_id}'''",
-            f"lilypond_code = '''{lilypond_spec}'''",
+            f"item_id = base64.b64decode('{id_b64}').decode('utf-8')",
+            f"lilypond_code = base64.b64decode('{spec_b64}').decode('utf-8')",
             "img = render_lilypond(lilypond_code, item_id)",
             "display(img)",
         ])
 
         return "\n".join(code_blocks)
+
+    def _normalize_backslashes(self) -> bool:
+        """Whether to collapse doubled command backslashes (see generate_code)."""
+        env = os.environ.get("LILYPOND_NORMALIZE_BACKSLASHES")
+        if env is not None:
+            return env.strip().lower() in ("1", "true", "yes", "on")
+        cfg = self.config or {}
+        return bool(cfg.get("lilypond_normalize_backslashes", True))
 
