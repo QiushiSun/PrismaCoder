@@ -1,0 +1,117 @@
+{
+  "source": "https://arxiv.org/html/2610.20538v1#S4.T1",
+  "source_version": "2610.20538v1",
+  "cross_check": "https://qiushisun.github.io/PrismaCoder-Home/static/js/prismacoder-data.js",
+  "reported_total": "2M",
+  "note": "Counts are reconstructed from the rounded K values in Table 1, not exact record counts. Figure angles and modality shares are normalized by their sum. Published per-row percentages are retained for reference.",
+  "rows": [
+    {
+      "modality": "Vision-centric",
+      "task": "WebUI Generation",
+      "samples": 357100,
+      "paper_share_percent": 17.8
+    },
+    {
+      "modality": "Vision-centric",
+      "task": "Chart-to-Code",
+      "samples": 196500,
+      "paper_share_percent": 9.8
+    },
+    {
+      "modality": "Vision-centric",
+      "task": "Image-to-SVG",
+      "samples": 181000,
+      "paper_share_percent": 9.0
+    },
+    {
+      "modality": "Vision-centric",
+      "task": "WebUI Editing",
+      "samples": 175000,
+      "paper_share_percent": 8.7
+    },
+    {
+      "modality": "Vision-centric",
+      "task": "Demo / Artifacts",
+      "samples": 163300,
+      "paper_share_percent": 8.1
+    },
+    {
+      "modality": "Vision-centric",
+      "task": "Chemical Structures",
+      "samples": 108000,
+      "paper_share_percent": 5.4
+    },
+    {
+      "modality": "Vision-centric",
+      "task": "Interactive Artifacts",
+      "samples": 9100,
+      "paper_share_percent": 0.5
+    },
+    {
+      "modality": "Text-centric",
+      "task": "Chart Generation",
+      "samples": 181100,
+      "paper_share_percent": 9.0
+    },
+    {
+      "modality": "Text-centric",
+      "task": "Demo / Artifacts",
+      "samples": 163000,
+      "paper_share_percent": 8.1
+    },
+    {
+      "modality": "Text-centric",
+      "task": "Text-to-WebUI",
+      "samples": 135200,
+      "paper_share_percent": 6.7
+    },
+    {
+      "modality": "Text-centric",
+      "task": "LaTeX",
+      "samples": 133100,
+      "paper_share_percent": 6.6
+    },
+    {
+      "modality": "Text-centric",
+      "task": "SVG Generation",
+      "samples": 53300,
+      "paper_share_percent": 2.7
+    },
+    {
+      "modality": "Text-centric",
+      "task": "Animation (Manim)",
+      "samples": 35900,
+      "paper_share_percent": 1.8
+    },
+    {
+      "modality": "Text-centric",
+      "task": "JavaScript",
+      "samples": 28500,
+      "paper_share_percent": 1.4
+    },
+    {
+      "modality": "Text-centric",
+      "task": "Mermaid",
+      "samples": 22700,
+      "paper_share_percent": 1.1
+    },
+    {
+      "modality": "Text-centric",
+      "task": "LilyPond",
+      "samples": 21900,
+      "paper_share_percent": 1.1
+    },
+    {
+      "modality": "Text-centric",
+      "task": "Vega-Lite",
+      "samples": 20000,
+      "paper_share_percent": 1.0
+    },
+    {
+      "modality": "Text-centric",
+      "task": "Asymptote",
+      "samples": 19400,
+      "paper_share_percent": 1.0
+    }
+  ]
+}
